@@ -3,11 +3,11 @@
 
 ## To install npm packages:
 (Make sure you have node downloaded and installed)
-###1. Run npm install in terminal while in the camerademo directory 
+### 1. Run npm install in terminal while in the camerademo directory 
 
-##To Run application in development mode:
-###1. npm start
-###2. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## To Run application in development mode:
+### 1. npm start
+### 2. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 - For detecting when camera is covered, checkout src/cameraComponents/coverCameraComponent.js.
 - Using https://www.npmjs.com/package/fast-average-color to determine average RGB values of images. 
