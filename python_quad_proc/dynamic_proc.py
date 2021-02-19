@@ -111,7 +111,3 @@ while True:
 
 plt.ioff() # due to infinite loop, this gets never called.
 plt.show()
-
-# initialize the camera
-cam = VideoCapture(0)   # 0 -> index of camera
-s, img = cam.read()
