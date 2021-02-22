@@ -4,10 +4,12 @@ import {List,ListItem,ListItemText, Grid} from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import face from './api/faceid_100.png'
 import FastAverageColor from 'fast-average-color'
+import LineGraph from '@chartiful/react-line-graph'
 
 const WIDTH = 325; //420
 const HEIGHT = 325; //420
 const inputSize = 160;
+const sliceImageQuadrants = 3;
 let interval;
 
 class CoverCameraComponent extends Component {
@@ -27,7 +29,7 @@ class CoverCameraComponent extends Component {
         cameraCovered:false,
         initialRGB:false,
         image:null,
-        imagePieces:[], piecesColors:[]
+        imagePieces:[], piecesColors:[],diffArr:[], alphaDiffArr:[], showAlertBox:false
 
 
     };
@@ -68,7 +70,7 @@ class CoverCameraComponent extends Component {
   }
   getAverageRGB = async (imgSrc, cb) => {
       const fac = new FastAverageColor();
-      fac.getColorAsync(imgSrc, { algorithm: 'dominant' })
+      fac.getColorAsync(imgSrc, { algorithm: "sqrt" })
           .then(async color => {
               cb(color,imgSrc)
           })
@@ -90,10 +92,71 @@ class CoverCameraComponent extends Component {
 
       }));
   };
+    checkImagePieces = ()=>{
+        const imageArr = this.state.imagePieces;
+        const r = [];
+        const g =[];
+        const b = [];
+        const a = [];
+        imageArr.map((obj, idx) => {
+            r.push(obj.color.value[0]);
+            g.push(obj.color.value[1]);
+            b.push(obj.color.value[2]);
+            a.push(obj.color.value[3])
+        });
+        const redBool = this.checkColorValues(r,'red');
+        const greenBool = this.checkColorValues(g,'green');
+        const blueBool = this.checkColorValues(b,'blue');
+        const alphaBool = this.checkColorValues(a,'alpha');
+        console.log(redBool, greenBool,blueBool)
+        if(redBool && greenBool && blueBool){
+            this.setState({showAlertBox:true})
+        }else if(this.state.showAlertBox && !redBool && !greenBool && !blueBool){
+            this.setState({showAlertBox:false})
+        }
+
+
+
+    };
+    checkColorValues=(arr, str)=>{
+        let result = false;
+        const differenceArr = [];
+        for (let i = 0; i < arr.length; i++) {
+            for (let j = arr.length -1; j-i >0 ; j--){
+                differenceArr.push(Math.abs(arr[j] - arr[i]));
+                //console.log(i,j, Math.abs(arr[j] - arr[i]), arr[j],arr[i]);
+            }
+
+        }
+        const arrAvg = differenceArr.reduce((a,b) => a + b, 0) / differenceArr.length;
+        console.log(str +' average difference', arrAvg,isNaN(arrAvg));
+        if(!isNaN(arrAvg)){
+            if(str !=='alpha'){
+                const newArr = this.state.diffArr;
+                newArr.push(arrAvg);
+                this.setState({diffArr:newArr })
+            }else{
+                const newArr = this.state.alphaDiffArr;
+                newArr.push(arrAvg);
+                //this.setState({alphaDiffArr:newArr })
+            }
+
+
+        }
+
+
+
+        if(arrAvg < 20)
+            result = true;
+
+        return result
+    };
+
  captureAverageRGB = async () =>{
      const img = this.webcam && this.webcam.current && this.webcam.current.getScreenshot();
      if(img){
          await this.splitImage(img, async (imagePieces) => this.setImagePieces(imagePieces));
+         await this.checkImagePieces();
          const fac = new FastAverageColor();
          fac.getColorAsync(img, { algorithm: 'dominant' })
              .then(async color => {
@@ -122,12 +185,12 @@ class CoverCameraComponent extends Component {
 splitImage = (imageBase64, cb) => {
     var img = new Image();
     img.src = imageBase64;
-    let widthOfOnePiece = Math.floor(WIDTH / 2);
-    let heightOfOnePiece = Math.floor(HEIGHT / 2);
+    let widthOfOnePiece = Math.floor(WIDTH / sliceImageQuadrants);
+    let heightOfOnePiece = Math.floor(HEIGHT / sliceImageQuadrants);
     var imagePieces = [];
     img.onload= ()=> {
-        const numColumns = 2;
-        const numRows = 2;
+        const numColumns = sliceImageQuadrants;
+        const numRows = sliceImageQuadrants;
         for (var x = 0; x < numColumns; ++x) {
             for (var y = 0; y < numRows; ++y) {
                 var canvas = document.createElement('canvas');
@@ -184,6 +247,33 @@ const getRGBSlice = (src)=>{
               alignItems: 'center'
             }}
         >
+           {<div style={{
+               position:'absolute',
+               left:5,
+               top:10
+           }}>
+               {this.state.diffArr}
+               <LineGraph
+                   data={this.state.diffArr}
+                   width={500}
+                   height={300}
+                   />
+               {(this.state.showAlertBox?
+                   <div style={{width:'100%'}}>
+                       <Alert variant="outlined" severity="error">
+                           This is an error alert — check it out!
+                       </Alert>
+                   </div>
+                   :null)
+               }
+               {/*<LineGraph
+                   data={this.state.alphaDiffArr}
+                   width={500}
+                   height={300}
+                   style={{marginTop:10}}
+               />*/}
+
+           </div>}
           <div>
             <div style={{ position: 'relative', width: WIDTH }}>
               {!!videoConstraints ? (
@@ -197,14 +287,7 @@ const getRGBSlice = (src)=>{
                         videoConstraints={videoConstraints}
 
                     />
-                          {(alertBox?
-                              <div style={{width:'100%'}}>
-                                  <Alert variant="outlined" severity="error">
-                                      This is an error alert — check it out!
-                                  </Alert>
-                                </div>
-                              :null)
-                          }
+
 
                           {this.state.color &&
                               <>
@@ -248,6 +331,7 @@ const getRGBSlice = (src)=>{
           </div>
 
           </div>
+
 
 
     );
