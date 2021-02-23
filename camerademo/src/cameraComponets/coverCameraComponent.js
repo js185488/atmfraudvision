@@ -9,7 +9,7 @@ import LineGraph from '@chartiful/react-line-graph'
 const WIDTH = 325; //420
 const HEIGHT = 325; //420
 const inputSize = 160;
-const sliceImageQuadrants = 3;
+const sliceImageQuadrants = 2;
 let interval;
 
 class CoverCameraComponent extends Component {
@@ -70,7 +70,7 @@ class CoverCameraComponent extends Component {
   }
   getAverageRGB = async (imgSrc, cb) => {
       const fac = new FastAverageColor();
-      fac.getColorAsync(imgSrc, { algorithm: "sqrt" })
+      fac.getColorAsync(imgSrc, { algorithm: "dominant" , mode:'precision'})
           .then(async color => {
               cb(color,imgSrc)
           })
