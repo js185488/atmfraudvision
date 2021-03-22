@@ -336,7 +336,7 @@ class FaceDetection extends Component {
                                     height={HEIGHT}
                                     ref={this.webcam}
                                     screenshotFormat="image/jpeg"
-                                    videoConstraints={videoConstraints}
+                                    videoConstraints={{deviceId:this.props.selectedCamera}}
 
                                 />
 
