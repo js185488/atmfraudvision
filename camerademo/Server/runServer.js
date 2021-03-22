@@ -66,7 +66,7 @@ appRouter.use('/startCPP', function(req,res) {
     child.stdin.end(); //end input*/
 });
 appRouter.use('/startPython', function(req,res){
-    const pythonCommand = ' python ..\\..\\python_quad_proc\\dynamic_proc.py';
+    const pythonCommand = 'python ..\\python_quad_proc\\dynamic_proc.py';
     runLocalProgram(pythonCommand);
     res.send('good')
 });
