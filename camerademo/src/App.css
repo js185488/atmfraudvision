@@ -14,7 +14,12 @@
 
 }
 
-
+.DemoContainer{
+  position: absolute;
+  width: 100%;
+  top: 300px;
+  align-content: center;
+}
 
 .App {
   text-align: center;
