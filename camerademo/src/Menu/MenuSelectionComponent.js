@@ -2,8 +2,7 @@
 import React from 'react';
 import '../App.css';
 import {callPythonCoverDemo} from '../messages/callLocalServer'
-
-
+import {callCppCoverDemo} from "../messages/callLocalServer";
 
 
 export const ButtonSelectionComponent =({setDemo}) => {
@@ -16,7 +15,8 @@ export const ButtonSelectionComponent =({setDemo}) => {
                 Cover camera (python)
             </button>
             <button className="demoButtons" onClick={()=>{
-                setDemo('cppCoverDemo')
+                setDemo('cppCoverDemo');
+                callCppCoverDemo();
             }}>
                 Cover camera (cpp)
             </button>
