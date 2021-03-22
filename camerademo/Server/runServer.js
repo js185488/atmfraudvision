@@ -4,13 +4,11 @@ const http = require('http');
 const {exec} = require('child_process');
 const express = require('express');
 var spawn = require("child_process").spawn,child;
-const multer = require("multer");
 const appRouter = express();
 // eslint-disable-next-line new-cap
 const app =express.Router();
 const fs = require('fs');
 const bodyParser = require('body-parser');
-
 
 
 const port = 8000;
@@ -42,7 +40,7 @@ function runLocalProgram(command){
 
 }
 
-appRouter.use('/start', function(req,res) {
+appRouter.use('/startCPP', function(req,res) {
     // eslint-disable-next-line max-len
     console.log("Running Mars");
     // eslint-disable-next-line max-len
@@ -50,7 +48,8 @@ appRouter.use('/start', function(req,res) {
     const Parameters = ' C:\\"Program Files"\\"Intel MARS"\\"MARS v5.0"\\"Room_Entry"\\"Outside Trigger"\\Room_Entry_Trigger.xml';
     const fileName = 'MARS.exe';
     const calc = 'C:\\Windows\\System32\\calc.exe';
-    runLocalProgram(calc);
+    const cppDemoATM = 'C:\\Users\\NCR\\Desktop\\obstruct\\opencv\\obstruct\\x64\\Release\\obstruct.exe';
+    runLocalProgram(cppDemoATM);
 
     res.send("good");
     /*
@@ -67,7 +66,7 @@ appRouter.use('/start', function(req,res) {
     child.stdin.end(); //end input*/
 });
 appRouter.use('/startPython', function(req,res){
-    const pythonCommand = ' python C:\\Users\\cm185265\\Projects\\ATMFraud\\atmfraudvision\\python_quad_proc\\dynamic_proc.py';
+    const pythonCommand = ' python ..\\..\\python_quad_proc\\dynamic_proc.py';
     runLocalProgram(pythonCommand);
     res.send('good')
 });

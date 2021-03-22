@@ -5,7 +5,7 @@ export function callPythonCoverDemo () {
     })
 }
 export function callCppCoverDemo () {
-    fetch(`http://localhost:8000/start`, {
+    fetch(`http://localhost:8000/startCPP`, {
         credentials: 'same-origin',
         method: 'GET'
     })
