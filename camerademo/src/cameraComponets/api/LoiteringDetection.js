@@ -69,6 +69,9 @@ class FaceDetection extends Component {
             console.log("Models Loaded")});
         this.setInputDevice();
         startMatchingTime = new Date();
+        if(localStorage.getItem('CustomerId')=== null){
+            localStorage.setItem('CustomerId','0')
+        }
     };
 
     setCustomer= async (img)=>{
