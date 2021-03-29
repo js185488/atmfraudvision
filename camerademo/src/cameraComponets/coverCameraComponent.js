@@ -250,12 +250,14 @@ const getRGBSlice = (src)=>{
            {<div style={{
                position:'absolute',
                left:5,
-               top:10
+               top:10,
+               width:'30%'
            }}>
                {this.state.diffArr}
+               <p>Pixel RGB Average Differences</p>
                <LineGraph
                    data={this.state.diffArr}
-                   width={500}
+                   width={window.innerWidth*.3}
                    height={300}
                    />
                {(this.state.showAlertBox?
@@ -284,7 +286,7 @@ const getRGBSlice = (src)=>{
                         height={HEIGHT}
                         ref={this.webcam}
                         screenshotFormat="image/jpeg"
-                        videoConstraints={videoConstraints}
+                        videoConstraints={{deviceId:this.props.selectedCamera}}
 
                     />
 

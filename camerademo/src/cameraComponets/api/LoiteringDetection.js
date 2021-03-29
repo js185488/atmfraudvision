@@ -5,9 +5,12 @@ import Dialog from '@material-ui/core/Dialog';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Paper from '@material-ui/core/Paper';
 import Draggable from 'react-draggable';
-import {sendEmotionData} from './Messages/sendEmotionData'
+import LottieEyeComponent from '../../icons/lottiefiles/LottieEyeComponent'
+
+
 import { Button } from '@material-ui/core';
 let beginMatchTime;
+let startMatchingTime;
 
 const WIDTH = 325; //420
 const HEIGHT = 325; //420
@@ -23,7 +26,7 @@ function PaperComponent(props) {
     );
 }
 
-class CustomerData extends Component {
+class FaceDetection extends Component {
     constructor(props) {
         super(props);
         this.webcam = React.createRef();
@@ -48,7 +51,9 @@ class CustomerData extends Component {
             regions:null,
             continousRegion:false,
             faceSearching:false,
-            livecapture:false, bestMatch:'', faceRecogBool:true, customerArr:[], openDialog:false
+            livecapture:false, bestMatch:'',
+            faceRecogBool:true, customerArr:[],
+            openDialog:false, loiteringTime:0
 
         };
     }
@@ -59,8 +64,14 @@ class CustomerData extends Component {
 
     componentWillMount = async () => {
         this.checkStatus();
+        this.setState({initalLoading:true})
+        await loadModels().then( async()=>{
+            console.log("Models Loaded")});
         this.setInputDevice();
-        beginMatchTime = new Date();
+        startMatchingTime = new Date();
+        if(localStorage.getItem('CustomerId')=== null){
+            localStorage.setItem('CustomerId','0')
+        }
     };
 
     setCustomer= async (img)=>{
@@ -105,7 +116,6 @@ class CustomerData extends Component {
     capture = async () => {
         const img = this.webcam && this.webcam.current && this.webcam.current.getScreenshot();
         if(img){
-            console.log(this.props.currentView)
 
             if (!!this.webcam.current) {
 
@@ -125,11 +135,10 @@ class CustomerData extends Component {
                     }
                     if(fullDesc&&fullDesc.length ==0 ) {
                         this.setState({faceSearching:true});
-                        if(new Date() - beginMatchTime> 5000 && this.state.customerArr.length > 0){
+                        if(new Date() - startMatchingTime> 5000 && this.state.customerArr.length > 0){
                             //localStorage.setItem(`CustomerArray_${parseInt(localStorage.getItem('CustomerId'))-1}`, JSON.stringify(this.state.customerArr))
-                            const res = await sendEmotionData(this.state.customerArr);
-                            console.log(res);
-                            this.setState({faceMatcher:null, customerArr:[]})
+
+                            this.setState({faceMatcher:null, customerArr:[],loiteringTime:0})
 
                         }
 
@@ -146,20 +155,22 @@ class CustomerData extends Component {
                     );
                     this.setState({ match });
                     if(match.length>0){
-                        beginMatchTime = new Date();
+                        startMatchingTime = new Date();
+
                         match.forEach(element =>{
                             if(element._label!=='unknown'){
                                 localStorage.setItem('currentCustomer', element._label);
                                 const gender = this.state.gender;
                                 const age = JSON.stringify(this.state.age);
-                                const view = this.props.currentView;
-                                const newObj = {...this.state.expressions, gender, age, customerId:element._label, date:new Date(), view};
+                                const newObj = {...this.state.expressions, gender, age, customerId:element._label, date:new Date()};
                                 const newArr = [...this.state.customerArr, newObj];
                                 console.log(newArr);
-                                this.setState({customerArr:newArr})
+                                const loiteringTime = (new Date() - beginMatchTime)/1000;
+                                this.setState({customerArr:newArr, loiteringTime})
+                                console.log("===================== Ms", new Date() - beginMatchTime)
                             }
                         })
-                    }else if(match.length === 0 &&new Date() - beginMatchTime >3000 ){
+                    }else if(match.length === 0 &&new Date() - startMatchingTime >3000 ){
                         console.log('Setting New Customer In Run')
                        const CI = parseInt(localStorage.getItem('CustomerId'));
                         await getCustomerFace(img, inputSize, `${CI}`).then((faceMatcher)=>{
@@ -172,6 +183,9 @@ class CustomerData extends Component {
 
                 }else if(!!this.state.descriptors && !this.state.faceMatcher && !this.state.faceSearching ) {
                     console.log('Setting New Customer')
+                    beginMatchTime = new Date();
+                    startMatchingTime = new Date();
+
 
                     const CI = parseInt(localStorage.getItem('CustomerId'));
                     await getCustomerFace(img, inputSize, `${CI}`).then((faceMatcher)=>{
@@ -238,7 +252,7 @@ class CustomerData extends Component {
                     <div key={i}>
                         <div
                             style={{
-                                position: (this.props.keyInBool?  'absolute':'absolute'),
+                                position:  'absolute',
                                 border: 'solid',
                                 borderColor: 'blue',
                                 height: _H,
@@ -318,16 +332,23 @@ class CustomerData extends Component {
                 <div>
                     <div style={{ position: 'relative', width: WIDTH }}>
                         {!!videoConstraints ? (
-                            <div style={{ position:'absolute', zIndex:'-2' }}>
+                            <div style={{ position:'absolute' }}>
                                 <Webcam
                                     audio={false}
                                     width={WIDTH}
                                     height={HEIGHT}
                                     ref={this.webcam}
                                     screenshotFormat="image/jpeg"
-                                    videoConstraints={videoConstraints}
+                                    videoConstraints={{deviceId:this.props.selectedCamera}}
 
                                 />
+
+                                {this.state.initalLoading ? <p>Loading....</p> :<>
+                                    {this.state.faceSearching ? <>  <LottieEyeComponent/> </> :
+                                            <p style={{fontSize: 24}}>{this.state.loiteringTime} seconds</p>
+                                    }
+                                    </>
+                                }
 
                             </div>
                         ) : null}
@@ -418,4 +439,4 @@ class CustomerData extends Component {
     };
 }
 
-export default CustomerData;
+export default FaceDetection;
