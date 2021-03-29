@@ -1,8 +1,10 @@
 import * as posenet from '@tensorflow-models/posenet'
 import * as React from 'react'
-import { isMobile, drawKeypoints, drawSkeleton } from './poseNet/utils'
+import { isMobile, drawKeypoints, drawSkeleton,drawBoundingBox } from './poseNet/utils'
 import * as tf from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-backend-cpu';
+//import "@tensorflow/tfjs-backend-webgl";
+
 
 export default class PoseNet extends React.Component {
 
@@ -10,15 +12,18 @@ export default class PoseNet extends React.Component {
         videoWidth: 600,
         videoHeight: 500,
         flipHorizontal: true,
-        algorithm: 'single-pose',
+        algorithm: 'multi-pose',
         mobileNetArchitecture: isMobile() ? 0.50 : 1.01,
+        architecture:'MobileNetV1',
         showVideo: true,
         showSkeleton: true,
         showPoints: true,
-        minPoseConfidence: 0.1,
-        minPartConfidence: 0.5,
+        minPoseConfidence: 0.25,
+        minPartConfidence: 0.1,
         maxPoseDetections: 2,
-        nmsRadius: 20.0,
+        inputResolution:500,
+        multiplier:0.75,
+        nmsRadius: 30.0,
         outputStride: 16,
         imageScaleFactor: 0.5,
         skeletonColor: 'aqua',
@@ -42,13 +47,18 @@ export default class PoseNet extends React.Component {
     }
 
     async componentWillMount() {
-        await tf.setBackend('cpu');
+        await tf.setBackend('webgl');
         await tf.ready().then(() => {console.log('wasm ready')});
         // Loads the pre-trained PoseNet model
-        this.net = await posenet.load({  architecture: 'MobileNetV1',
+        this.net = await posenet.load({  architecture: this.props.architecture,
+            outputStride: this.props.outputStride,
+            inputResolution: this.props.inputResolution,
+            multiplier: this.props.multiplier,})/*
+        {  architecture: 'MobileNetV1',
             outputStride: 16,
             inputResolution: { width: 600, height: 500 },
-            multiplier: 0.75});//this.props.mobileNetArchitecture);
+            multiplier: 0.75});//this.props.mobileNetArchitecture);*/
+
 
 
     }
@@ -144,6 +154,7 @@ export default class PoseNet extends React.Component {
                         flipHorizontal,
                         outputStride
                     )
+                    console.log(pose)
 
                     poses.push(pose)
 
@@ -167,8 +178,10 @@ export default class PoseNet extends React.Component {
 
             if (showVideo) {
                 ctx.save()
-                ctx.scale(-1, 1)
-                ctx.translate(-videoWidth, 0)
+
+                ctx.scale(-1, -1)
+                ctx.translate(0,videoWidth)
+
                 ctx.drawImage(video, 0, 0, videoWidth, videoHeight)
                 ctx.restore()
             }
@@ -184,14 +197,17 @@ export default class PoseNet extends React.Component {
                     if (showSkeleton) {
                         drawSkeleton(keypoints, minPartConfidence, skeletonColor, skeletonLineWidth, ctx);
                     }
+                    drawBoundingBox(keypoints,skeletonColor, ctx);
                 }
             })
+
 
             requestAnimationFrame(poseDetectionFrameInner)
         }
 
         poseDetectionFrameInner()
     }
+
 
     render() {
         const loading = this.state.loading
@@ -200,8 +216,9 @@ export default class PoseNet extends React.Component {
         return (
             <div className="PoseNet">
                 { loading }
-                <video playsInline ref={ this.getVideo }></video>
-                <canvas ref={ this.getCanvas }></canvas>
+                <video style={{position: 'absolute'}} playsInline ref={ this.getVideo }></video>
+                <canvas style={{position: 'relative'}} ref={ this.getCanvas }></canvas>
+
             </div>
         )
     }

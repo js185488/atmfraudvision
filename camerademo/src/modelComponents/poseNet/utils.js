@@ -48,3 +48,13 @@ export function drawSkeleton(keypoints, minConfidence, color, lineWidth, ctx, sc
         )
     })
 }
+export function drawBoundingBox(keypoints, skeletonColor,ctx) {
+    const boundingBox = posenet.getBoundingBox(keypoints);
+
+    ctx.rect(
+        boundingBox.minX, boundingBox.minY, boundingBox.maxX - boundingBox.minX,
+        boundingBox.maxY - boundingBox.minY);
+
+    ctx.strokeStyle = skeletonColor;
+    ctx.stroke();
+}
