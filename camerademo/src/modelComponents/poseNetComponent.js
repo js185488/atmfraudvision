@@ -1,9 +1,10 @@
 import * as posenet from '@tensorflow-models/posenet'
 import * as React from 'react'
 import { isMobile, drawKeypoints, drawSkeleton,drawBoundingBox } from './poseNet/utils'
-import * as tf from '@tensorflow/tfjs';
-import '@tensorflow/tfjs-backend-cpu';
-//import "@tensorflow/tfjs-backend-webgl";
+import * as tf from '../../node_modules/@tensorflow/tfjs';
+import '../../node_modules/@tensorflow/tfjs-backend-cpu';
+import "../../node_modules/@tensorflow/tfjs-backend-webgl";
+import {useEffect} from "react";
 
 
 export default class PoseNet extends React.Component {
@@ -12,7 +13,7 @@ export default class PoseNet extends React.Component {
         videoWidth: 600,
         videoHeight: 500,
         flipHorizontal: true,
-        algorithm: 'multi-pose',
+        algorithm: 'single-pose',
         mobileNetArchitecture: isMobile() ? 0.50 : 1.01,
         architecture:'MobileNetV1',
         showVideo: true,
@@ -37,6 +38,11 @@ export default class PoseNet extends React.Component {
 
 
     }
+    async componentDidUpdate() {
+        await this.setupCamera()
+
+    }
+
 
     getCanvas = elem => {
         this.canvas = elem
@@ -63,6 +69,7 @@ export default class PoseNet extends React.Component {
 
     }
 
+
     async componentDidMount() {
         try {
             await this.setupCamera()
@@ -75,7 +82,7 @@ export default class PoseNet extends React.Component {
         this.detectPose()
     }
 
-    async setupCamera() {
+    async setupCamera(selectedCamera) {
         // MDN: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             throw 'Browser API navigator.mediaDevices.getUserMedia not available'
@@ -92,7 +99,7 @@ export default class PoseNet extends React.Component {
         const stream = await navigator.mediaDevices.getUserMedia({
             audio: false,
             video: {
-                facingMode: 'user',
+                deviceId:this.props.selectedCamera,
                 width: mobile ? void 0 : videoWidth,
                 height: mobile ? void 0: videoHeight,
             }
@@ -210,14 +217,19 @@ export default class PoseNet extends React.Component {
 
 
     render() {
+
         const loading = this.state.loading
             ? <div className="PoseNet__loading">{ this.props.loadingText }</div>
             : ''
         return (
             <div className="PoseNet">
                 { loading }
-                <video style={{position: 'absolute'}} playsInline ref={ this.getVideo }></video>
-                <canvas style={{position: 'relative'}} ref={ this.getCanvas }></canvas>
+
+                    <>
+                    <video style={{position: 'absolute'}} playsInline ref={this.getVideo}></video>
+                    < canvas style = {{position: 'relative'}} ref={this.getCanvas}></canvas>
+                    </>
+
 
             </div>
         )

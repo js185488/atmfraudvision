@@ -1,4 +1,4 @@
-import * as posenet from '@tensorflow-models/posenet';
+import * as posenet from '../../../node_modules/@tensorflow-models/posenet';
 
 function isAndroid() {
     return /Android/i.test(navigator.userAgent);

@@ -26,11 +26,16 @@ export const ButtonSelectionComponent =({setDemo}) => {
                     }}>
                 Cover camera (web based)
             </button>
-            <button className="demoButtons"
+            {/* <button className="demoButtons"
                     onClick={()=>{
                         setDemo('loiteringDemo')
                     }}>
                 Jackpotting Demo (web based)
+            </button>*/}
+            <button className="demoButtons" onClick={()=>{
+                setDemo('pose');
+            }}>
+                Jackpotting Demo (pose)
             </button>
         </div>
     )

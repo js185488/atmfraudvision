@@ -286,7 +286,8 @@ const getRGBSlice = (src)=>{
                         height={HEIGHT}
                         ref={this.webcam}
                         screenshotFormat="image/jpeg"
-                        videoConstraints={{deviceId:this.props.selectedCamera}}
+                        videoConstraints={{deviceId:this.props.selectedCamera,  width: WIDTH,
+                            height: HEIGHT,}}
 
                     />
 
