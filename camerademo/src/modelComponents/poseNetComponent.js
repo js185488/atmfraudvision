@@ -6,8 +6,9 @@ import '../../node_modules/@tensorflow/tfjs-backend-cpu';
 import "../../node_modules/@tensorflow/tfjs-backend-webgl";
 import {useEffect} from "react";
 
-
+let runPose = true;
 export default class PoseNet extends React.Component {
+
 
     static defaultProps = {
         videoWidth: 600,
@@ -32,16 +33,29 @@ export default class PoseNet extends React.Component {
         loadingText: 'Loading pose detector...'
     }
 
+
     constructor(props) {
         super(props, PoseNet.defaultProps)
-        this.state = { loading: true }
+        this.state = { loading: true, selectedCamera:this.props.selectedCamera,runPose:true }
+    }
+    async componentWillUnmount(){
+        await this.clearVideoAndModel()
 
 
     }
-    async componentDidUpdate() {
-        await this.setupCamera()
+
+    async clearVideoAndModel(){
+        if( this.video.srcObject) {
+            await this.video.srcObject.getTracks().forEach(track => {
+                track.stop();
+            })
+            console.log('Clearing video')
+        }
+        runPose= false
+        console.log("Stopping posemodel")
 
     }
+
 
 
     getCanvas = elem => {
@@ -68,6 +82,19 @@ export default class PoseNet extends React.Component {
 
 
     }
+    async shouldComponentUpdate(){
+
+    }
+    async componentDidUpdate(prevProps) {
+        // Typical usage (don't forget to compare props):
+        if (this.props.selectedCamera !== this.state.selectedCamera) {
+            await this.clearVideoAndModel()
+
+            this.setState({selectedCamera:this.props.selectedCamera})
+
+            await this.setupCamera()
+        }
+    }
 
 
     async componentDidMount() {
@@ -78,11 +105,12 @@ export default class PoseNet extends React.Component {
         } finally {
             this.setState({ loading: false })
         }
-
         this.detectPose()
     }
 
-    async setupCamera(selectedCamera) {
+    async setupCamera() {
+        runPose=true
+
         // MDN: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             throw 'Browser API navigator.mediaDevices.getUserMedia not available'
@@ -99,7 +127,7 @@ export default class PoseNet extends React.Component {
         const stream = await navigator.mediaDevices.getUserMedia({
             audio: false,
             video: {
-                deviceId:this.props.selectedCamera,
+                deviceId:this.state.selectedCamera,
                 width: mobile ? void 0 : videoWidth,
                 height: mobile ? void 0: videoHeight,
             }
@@ -148,6 +176,11 @@ export default class PoseNet extends React.Component {
 
         const net = this.net
         const video = this.video
+
+
+
+
+
 
         const poseDetectionFrameInner = async () => {
             let poses = []
@@ -209,14 +242,36 @@ export default class PoseNet extends React.Component {
             })
 
 
-            requestAnimationFrame(poseDetectionFrameInner)
+            this._frameId = window.requestAnimationFrame(poseDetectionFrameInner )
+            if(!runPose){
+                stopLoop()
+
+            }
+        }
+       console.log(runPose)
+
+        const startLoop=()=> {
+            if( !this._frameId ) {
+                this._frameId = window.requestAnimationFrame( poseDetectionFrameInner() );
+            }
+        }
+        const stopLoop=()=> {
+            window.cancelAnimationFrame(this._frameId);
         }
 
-        poseDetectionFrameInner()
+
+
+
+        try{startLoop()} catch(e){}
+
+
     }
 
 
+
     render() {
+
+
 
         const loading = this.state.loading
             ? <div className="PoseNet__loading">{ this.props.loadingText }</div>

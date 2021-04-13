@@ -12,11 +12,11 @@ function App() {
     return (
 
     <div className="App">
-        <ButtonSelectionComponent setDemo={setDemo}/>
+        {selectedCamera?  <ButtonSelectionComponent setDemo={setDemo}/>:"Loading"}
+        <CameraSelectionComponent setCamera={setCamera} />
+
         <div className="DemoContainer">
-            {((demo==='webCoverDemo')||(demo==='loiteringDemo')||(demo==='pose')?
-                <CameraSelectionComponent setCamera={setCamera} />
-            :null)}
+
         {(demo==='webCoverDemo'?
             <CoverCameraComponent selectedCamera={selectedCamera}/>: null)}
         {(demo==='loiteringDemo'?

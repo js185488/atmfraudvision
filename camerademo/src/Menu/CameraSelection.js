@@ -51,7 +51,7 @@ class CameraSelectionComponent extends Component {
 
             <>
                 <NativeSelect
-                    style={{background:'white', paddingLeft:20}}
+                    style={{background:'white', paddingLeft:20,right:80,top:40, position:'absolute'}}
                     onChange={(event) => {
                         setDeviceId(event.target.value);
                         handleCameraChange(event)
