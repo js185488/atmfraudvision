@@ -32,6 +32,12 @@ export const ButtonSelectionComponent =({setDemo}) => {
                     }}>
                 Jackpotting Demo (web based)
             </button>
+            <button className="demoButtons"
+                    onClick={()=>{
+                        setDemo('lumeoDemo')
+                    }}>
+                Lumeo
+            </button>
         </div>
     )
 }

@@ -4,13 +4,16 @@ const http = require('http');
 const {exec} = require('child_process');
 const express = require('express');
 var spawn = require("child_process").spawn,child;
+var multer  = require('multer');
+
 const appRouter = express();
 // eslint-disable-next-line new-cap
 const app =express.Router();
 const fs = require('fs');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
-
+let status=[]
 const port = 8000;
 // Create a server
 const server = http.createServer(appRouter);
@@ -18,12 +21,16 @@ const server = http.createServer(appRouter);
 server.listen(port, function() {
     // Callback triggered when server is successfully listening. Hurray!
     console.log('Server listening on: http://localhost:%s', port);
+
 });
 appRouter.use(bodyParser.urlencoded({ extended: true }));
 //form-urlencoded
+appRouter.use(bodyParser.json());
 
 // for parsing multipart/form-data
 appRouter.use(express.static('public'));
+appRouter.use(cors());
+
 
 function runLocalProgram(command){
     exec( command, (error, stdout, stderr) => {
@@ -86,4 +93,17 @@ appRouter.use('/kill', function(req,res) {
     res.send('good');
 });
 
+let varState={};
+appRouter.use('/lumeo', function(req,res){
+    console.log(req.body); // Call your action on the request here
+    varState=req.body
+    res.status(200).end() // Responding is important
+});
+appRouter.use('/getlumeostatus', (req,res)=>{
+    if(varState)
+    {res.json(varState)}
+    else
+        res.json({"message":"nothing"}).end()
+     // Responding is important
 
+});

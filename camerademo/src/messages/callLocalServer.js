@@ -10,3 +10,49 @@ export function callCppCoverDemo () {
         method: 'GET'
     })
 }
+export async function callLumeoState () {
+    await fetch(`http://localhost:8000/getlumeostatus`, {
+        method: 'GET',
+        redirect: 'follow',
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            'Access-Control-Allow-Origin':'*'
+        }
+
+
+    }).then(result => console.log(result))
+        .catch(error => console.log('error', error));
+
+}
+export const getLumeoStatus = () => {
+    const url = `http://localhost:8000/getlumeostatus`;
+
+    const payloadGeneric = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            'Access-Control-Allow-Origin':'*'
+
+}};
+    return fetch(url, payloadGeneric)
+        .then(handleResponse()).then((result) => {
+            return {
+                event: result,
+
+            };
+        }).catch((error) => {
+            console.log(error)
+            return {
+                event : null,
+
+            };
+        });
+};
+export const handleResponse = () => {
+    return function(response) {
+        if(response.ok) {
+            return response.json();
+        }
+        throw new Error(response.status);
+    };
+};

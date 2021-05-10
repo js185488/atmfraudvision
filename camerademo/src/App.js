@@ -4,6 +4,7 @@ import CoverCameraComponent from "./cameraComponets/coverCameraComponent";
 import FaceDetection from "./cameraComponets/api/LoiteringDetection";
 import ButtonSelectionComponent from "./Menu/MenuSelectionComponent";
 import CameraSelectionComponent from "./Menu/CameraSelection";
+import LumeoMainComponent from "./Lumeo/Components/LumeoMainComponent";
 function App() {
     const [demo, setDemo] = useState(null);
     const [selectedCamera, setCamera] = useState(null);
@@ -25,6 +26,9 @@ function App() {
             <>Running PythonDemo, Wait for terminal to open</>: null)}
         {(demo==='cppCoverDemo'?
             <>Running cpp Demo, Wait for terminal to open</>: null)}
+        {(demo==='lumeoDemo'?
+                <LumeoMainComponent selectedCamera={selectedCamera}/>: null)}
+
            </div>
     </div>
 
