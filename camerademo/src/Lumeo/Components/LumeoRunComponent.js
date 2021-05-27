@@ -1,10 +1,10 @@
 
 import React, {Component, useEffect, useState} from 'react';
 import {getLumeoStatus, callLumeoState} from '../../messages/callLocalServer'
-import {getLumeoStreams} from '../lumeoMesages'
+import {getLumeoStreams, getCash} from '../lumeoMesages'
 let interval;
 let eventArr = []
-class LumeoMainComponent extends Component {
+class LumeoRunComponent extends Component {
     constructor(props) {
         super(props);
         this.webcam = React.createRef();
@@ -40,7 +40,7 @@ class LumeoMainComponent extends Component {
     }
     getStreams = async () => {
        const result = await getLumeoStreams()
-        const streamList = result.filter((stream)=> stream.status==='online' )
+        const streamList = result.filter((stream)=> (stream.status==='online' &&  stream.stream_type === 'webrtc'))
         console.log(streamList)
         this.setState({streamLists:streamList})
 
@@ -73,14 +73,21 @@ class LumeoMainComponent extends Component {
 
 
 
+
                         { this.state.streamLists.map((stream)=>{
-                                return(<iframe src={stream.uri} style={{width: '80%', height:600}}>
+                                return(<iframe src={stream.uri} style={{width: 600, height:400}} allow='autoplay'>
                                         stream
                                         {stream.uri}
                                     </iframe>
 
                                 )
                             })}
+                    <button className="demoButtons"
+                            onClick={()=>{
+                                getCash()
+                            }}>
+                        Get Cash
+                    </button>
 
 
                 </div>
@@ -94,9 +101,15 @@ class LumeoMainComponent extends Component {
                     })
 
                 }
+                <button className="demoButtons"
+                        onClick={()=>{
+                            this.props.setDemo(null)
+                        }}>
+                    Stop
+                </button>
 
             </div>
         )
     }
 }
-export default LumeoMainComponent;
+export default LumeoRunComponent;
