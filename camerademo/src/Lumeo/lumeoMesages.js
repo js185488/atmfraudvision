@@ -40,10 +40,9 @@ export const getCash=()=>{
 
     const payloadGeneric = {
         method: "PUT",
-        mode:'no-cors',
+        credentials: 'same-origin',
         headers: {
             "Content-Type": "application/json; charset=utf-8",
-
         },
         body:raw
     };
