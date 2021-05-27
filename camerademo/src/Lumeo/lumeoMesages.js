@@ -16,6 +16,7 @@ export const getLumeoStreams= () => {
 
     const payloadGeneric = {
         method: "GET",
+        credentials: 'same-origin',
         headers: {
             "Content-Type": "application/json; charset=utf-8",
             "Authorization": `Bearer ${lumeoBearerToken}`
