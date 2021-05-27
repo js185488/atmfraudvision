@@ -21,7 +21,7 @@ class LumeoMenuComponent extends Component {
         <div className="menuContainer">
             {!this.state.start &&
             <>
-                <h1 style={{color: 'white', paddingTop: 200, fontSize: 72}}>ATM Fraud Demo</h1>
+                <h1 style={{color: 'white', paddingTop: 200, fontSize: 72, margin:0}}>ATM Fraud Demo</h1>
                 < h2 style={{color:'white', paddingTop:10, fontSize:56}}>HW Innovation</h2>
 
 
