@@ -40,8 +40,11 @@ export const getCash=()=>{
 
     const payloadGeneric = {
         method: "PUT",
+        credentials: 'same-origin',
         headers: {
             "Content-Type": "application/json; charset=utf-8",
+            'Access-Control-Allow-Origin':'*'
+
         },
         body:raw
     };
