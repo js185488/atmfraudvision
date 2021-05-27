@@ -35,7 +35,7 @@ class LumeoMenuComponent extends Component {
             }
             {
                 this.state.start && <>
-                    <h2 style={{color:'white', paddingTop:200, fontSize:56}}>HW Innovation</h2>
+                    <h2 style={{color:'white', paddingTop:200, fontSize:56,  margin:0}}>HW Innovation</h2>
                     <h2 style={{color:'white', paddingTop:10, fontSize:56}}>HW Innovation</h2>
 
 

@@ -54,7 +54,7 @@ class LumeoRunComponent extends Component {
     }
      startCapture = async () => {
         interval = setInterval(async () => {
-            await this.getMetaData()
+           // await this.getMetaData()
         }, 10500);
 
     };
@@ -83,8 +83,9 @@ class LumeoRunComponent extends Component {
                                 )
                             })}
                     <button className="demoButtons"
-                            onClick={()=>{
-                                getCash()
+                            onClick={async ()=>{
+                                console.log('Getting Cash')
+                                await getCash()
                             }}>
                         Get Cash
                     </button>
