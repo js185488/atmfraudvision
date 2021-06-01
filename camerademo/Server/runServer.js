@@ -116,15 +116,41 @@ appRouter.use('/getlumeostatus', (req,res)=>{
 
 
 appRouter.use('/getCash', function(req,res){
-    const getCash = `curl --location --request PUT 'http://localhost:3001/api/deliverypoints/ATM/Atlanta/6684-BAY04A/allocations/1' \\
---header 'Content-Type: application/json' \\
---data-raw '{
-  "action": "DISPENSE",
-  "params": "{\\"amount\\": \\"40\\",\\"notes_taken_timeout\\": 40}"
-}'`;
 
+    var request = require('request');
+    var options = {
+        'method': 'PUT',
+        'url': 'http://localhost:3001/api/deliverypoints/ATM/Atlanta/6684-BAY04A/allocations/1',
+        'headers': {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({"action":"DISPENSE","params":"{\"amount\": \"40\",\"notes_taken_timeout\": 40}"})
 
-    runLocalProgram(getCash);
+    };
+    request(options, function (error, response) {
+        if (error) throw new Error(error);
+        console.log(response.body);
+    });
+
     res.send('good')
 });
 
+appRouter.use('/setCash', function(req,res) {
+
+    var request = require('request');
+    var options = {
+        'method': 'POST',
+        'url': 'http://localhost:3001/api/deliverypoints/ATM/Atlanta/6684-BAY04A/allocations',
+        'headers': {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({"allocationType":"MANUAL","id":"6684-BAY04A"})
+
+    };
+    request(options, function (error, response) {
+        if (error) throw new Error(error);
+        console.log(response.body);
+    });
+    res.send('good')
+
+});
