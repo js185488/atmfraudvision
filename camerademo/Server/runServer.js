@@ -77,6 +77,11 @@ appRouter.use('/startPython', function(req,res){
     runLocalProgram(pythonCommand);
     res.send('good')
 });
+
+
+
+
+
 appRouter.use('/kill', function(req,res) {
     console.log("Killing Mars");
     exec( 'taskkill /IM "MARS.exe" /F', (error, stdout, stderr) => {
@@ -107,3 +112,19 @@ appRouter.use('/getlumeostatus', (req,res)=>{
      // Responding is important
 
 });
+
+
+
+appRouter.use('/getCash', function(req,res){
+    const getCash = `curl --location --request PUT 'http://localhost:3001/api/deliverypoints/ATM/Atlanta/6684-BAY04A/allocations/1' \\
+--header 'Content-Type: application/json' \\
+--data-raw '{
+  "action": "DISPENSE",
+  "params": "{\\"amount\\": \\"40\\",\\"notes_taken_timeout\\": 40}"
+}'`;
+
+
+    runLocalProgram(getCash);
+    res.send('good')
+});
+

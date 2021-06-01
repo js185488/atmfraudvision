@@ -1,6 +1,6 @@
 
 import React, {Component, useEffect, useState} from 'react';
-import {getLumeoStatus, callLumeoState} from '../../messages/callLocalServer'
+import {getLumeoStatus, callLumeoState,callGetCash} from '../../messages/callLocalServer'
 import {getLumeoStreams, getCash} from '../lumeoMesages'
 let interval;
 let eventArr = []
@@ -85,7 +85,7 @@ class LumeoRunComponent extends Component {
                     <button className="demoButtons"
                             onClick={async ()=>{
                                 console.log('Getting Cash')
-                                await getCash()
+                                await callGetCash()
                             }}>
                         Get Cash
                     </button>

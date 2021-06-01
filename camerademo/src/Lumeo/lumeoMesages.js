@@ -35,7 +35,7 @@ export const getLumeoStreams= () => {
 
 
 export const getCash=()=>{
-    const dispenseURL= 'http://localhost:3001/api/deliverypoints/ATM/Atlanta/6684-BAY04A/allocations/1'
+    const dispenseURL= 'http://153.73.151.162:3001/api/deliverypoints/ATM/Atlanta/6684-BAY04A/allocations/1'
     const raw = JSON.stringify({"action":"DISPENSE","params":"{\"amount\": \"40\",\"notes_taken_timeout\": 40}"});
 
     const payloadGeneric = {
@@ -43,6 +43,7 @@ export const getCash=()=>{
         credentials: 'same-origin',
         headers: {
             "Content-Type": "application/json; charset=utf-8",
+            'Access-Control-Allow-Origin': 'http://localhost:3000'
         },
         body:raw
     };
