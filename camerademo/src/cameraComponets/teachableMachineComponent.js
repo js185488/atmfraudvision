@@ -1,16 +1,17 @@
-import React from 'react';
+import React, {useState} from 'react';
 import ml5 from "ml5";
-//import modelURL from '../../public/models/cashslotModel/model';
 const MODEL_URL = process.env.PUBLIC_URL + '/models/cashslotModel/model.json';
+const cloud_url = "https://teachablemachine.withgoogle.com/models/wwff063Lq/model.json";
+
 class CashSlotComponent extends React.Component {
 
 
     componentDidMount() {
         this.videoRef = React.createRef();
-        this.setState({videoRef : this.videoRef});
+        this.setState({videoRef : this.videoRef, imageSrc:null});
 
         this.classifier = ml5.imageClassifier(
-            MODEL_URL,
+            cloud_url,
             () => {
                 navigator.mediaDevices
                     .getUserMedia({ video: true, audio: false })
@@ -26,9 +27,11 @@ class CashSlotComponent extends React.Component {
         var classifier = this.classifier;
         var videoRef = this.videoRef;
         var callback = this.props.callback;
-        this.intervalID = setInterval(function(){
+
+        this.intervalID = setInterval(async function(){
             //console.log("update", classifier);
             if (classifier) {
+
                 classifier.classify(videoRef.current, (error, results) => {
                     if (error) {
                         console.error(error);
@@ -36,9 +39,32 @@ class CashSlotComponent extends React.Component {
                     }
                     callback(results);
                 });
+
             }
         }, 500);
     }
+
+    runClassifer =(imagePieces)=>{
+
+
+    }
+
+
+    splitImage = (imageBase64, cb) => {
+        var img = new Image();
+        img.src = imageBase64;
+        var imagePieces = [];
+        img.onload= ()=> {
+                    var canvas = document.createElement('canvas');
+                    canvas.width = 600;
+                    canvas.height = 410;
+                    var context = canvas.getContext('2d');
+                    context.drawImage(img, 576, 0, 600, 410, 0, 0, 600,410);
+                    imagePieces.push(canvas.toDataURL("image/jpeg"));
+            };
+        this.setState({imageSrc:imagePieces[0]});
+            cb(imagePieces)
+    };
 
     render(){
         return(
