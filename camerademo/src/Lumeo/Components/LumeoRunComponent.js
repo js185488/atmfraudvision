@@ -15,7 +15,9 @@ class LumeoRunComponent extends Component {
             event:null,
             streamLists:[],
             selectedStream:null,
-            streamListLoaded:false
+            streamListLoaded:false,
+            predictionArr:[],
+            predict:null
 
 
         };
@@ -62,6 +64,17 @@ class LumeoRunComponent extends Component {
 
     };
 
+    setCustomModel = (res) =>{
+        if(res.length>0) {
+            const max = Math.max(...res.map(o => o.confidence), 0);
+            console.log(max)
+
+            const predict = res.filter(obj => (obj.confidence === max));
+            console.log('pre',predict)
+            this.setState({predictionArr: res, predict: predict[0].label})
+        }
+    }
+
 
 
 
@@ -72,6 +85,11 @@ class LumeoRunComponent extends Component {
         return (
             <div className="DemoContainer" style={{top:180, width:"100%"}}>
                 <div>
+                    <CashSlotComponent callback={(res)=>{
+                        console.log(res)
+                        this.setCustomModel(res)
+                    }}/>
+                    {this.state.predict && <p style={{color:'white'}}>{this.state.predict}</p>}
 
 
 
@@ -99,9 +117,7 @@ class LumeoRunComponent extends Component {
                     })
 
                 }
-                <CashSlotComponent callback={(res)=>{
-                    console.log(res)
-                }}/>
+
                 <button className="demoButtons"
                         onClick={async ()=>{
                             console.log('Getting Cash')

@@ -71,9 +71,9 @@ class CashSlotComponent extends React.Component {
             <div>
                 <video
                     ref={this.videoRef}
-                    style={{ transform: "scale(-1, 1)" }}
-                    width="300"
-                    height="150"
+                    style={{width: 600, height:400,transform: "scale(-1, 1)" }}
+                    //width="300"
+                   // height="150"
                 />
             </div>
         );
