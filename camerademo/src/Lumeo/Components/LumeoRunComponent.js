@@ -1,9 +1,11 @@
 
 import React, {Component, useEffect, useState} from 'react';
 import {getLumeoStatus, callLumeoState,callGetCash} from '../../messages/callLocalServer'
-import {getLumeoStreams, getCash} from '../lumeoMesages'
+import {getLumeoStreams} from '../lumeoMesages'
+import CashSlotComponent from '../../cameraComponets/teachableMachineComponent'
 let interval;
-let eventArr = []
+let eventArr = [];
+
 class LumeoRunComponent extends Component {
     constructor(props) {
         super(props);
@@ -47,6 +49,7 @@ class LumeoRunComponent extends Component {
     }
 
 
+
      getMetaData = async () => {
         const currentEvent = await getLumeoStatus();
         this.parseData(currentEvent)
@@ -82,13 +85,7 @@ class LumeoRunComponent extends Component {
 
                                 )
                             })}
-                    <button className="demoButtons"
-                            onClick={async ()=>{
-                                console.log('Getting Cash')
-                                await callGetCash()
-                            }}>
-                        Get Cash
-                    </button>
+
 
 
                 </div>
@@ -102,6 +99,16 @@ class LumeoRunComponent extends Component {
                     })
 
                 }
+                <CashSlotComponent callback={(res)=>{
+                    console.log(res)
+                }}/>
+                <button className="demoButtons"
+                        onClick={async ()=>{
+                            console.log('Getting Cash')
+                            await callGetCash()
+                        }}>
+                    Get Cash
+                </button>
                 <button className="demoButtons"
                         onClick={()=>{
                             this.props.setDemo(null)
