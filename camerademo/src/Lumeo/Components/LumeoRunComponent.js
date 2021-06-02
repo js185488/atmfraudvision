@@ -54,7 +54,7 @@ class LumeoRunComponent extends Component {
     }
      startCapture = async () => {
         interval = setInterval(async () => {
-           // await this.getMetaData()
+            await this.getMetaData()
         }, 10500);
 
     };
