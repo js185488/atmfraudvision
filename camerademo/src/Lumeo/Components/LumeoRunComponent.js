@@ -84,18 +84,22 @@ class LumeoRunComponent extends Component {
 
         return (
             <div className="DemoContainer" style={{top:180, width:"100%"}}>
-                <div>
+                <div style={{display:'flex', padding:80}}>
+                    <div>
                     <CashSlotComponent callback={(res)=>{
                         console.log(res)
                         this.setCustomModel(res)
-                    }}/>
+                    }}>
+                    </CashSlotComponent>
                     {this.state.predict && <p style={{color:'white'}}>{this.state.predict}</p>}
+                    </div>
 
 
 
 
 
-                        { this.state.streamLists.map((stream)=>{
+
+                    { this.state.streamLists.map((stream)=>{
                                 return(<iframe src={stream.uri} style={{width: 600, height:400}} allow='autoplay'>
                                         stream
                                         {stream.uri}
