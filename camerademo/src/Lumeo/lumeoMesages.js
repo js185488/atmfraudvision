@@ -32,6 +32,29 @@ export const getLumeoStreams= () => {
             };
         });
 };
+export const setDeployment =(deployment_id, state) =>{
+    const {app_id, lumeoBearerToken,hook_chain_id} = getConfig();
+    const url = `https://api.lumeo.com/v1/apps/${app_id}/deployments/${deployment_id}/state`;
+
+    const payloadGeneric = {
+        method: "PUT",
+        credentials: 'same-origin',
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            "Authorization": `Bearer ${lumeoBearerToken}`
+
+        },
+        body: state
+    };
+    return fetch(url, payloadGeneric)
+        .then(handleResponse()).then((result) => {
+            return result;
+        }).catch((error) => {
+            return {
+                message:''
+            };
+        });
+};
 
 
 export const getCash=()=>{

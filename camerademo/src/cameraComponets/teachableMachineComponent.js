@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import ml5 from "ml5";
 const MODEL_URL = process.env.PUBLIC_URL + '/models/cashslotModel/model.json';
 const cloud_url = "https://teachablemachine.withgoogle.com/models/wwff063Lq/model.json";
-
+let interval;
 class CashSlotComponent extends React.Component {
 
 
@@ -28,7 +28,7 @@ class CashSlotComponent extends React.Component {
         var videoRef = this.videoRef;
         var callback = this.props.callback;
 
-        this.intervalID = setInterval(async function(){
+        interval = setInterval(async function(){
             //console.log("update", classifier);
             if (classifier) {
 
@@ -44,10 +44,15 @@ class CashSlotComponent extends React.Component {
         }, 500);
     }
 
-    runClassifer =(imagePieces)=>{
+    componentWillUnmount() {
+        clearInterval(interval);
+        this.videoRef = null
+        this.setState({videoRef : this.videoRef});
+
 
 
     }
+
 
 
     splitImage = (imageBase64, cb) => {

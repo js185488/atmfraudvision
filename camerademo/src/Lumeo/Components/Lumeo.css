@@ -1,9 +1,13 @@
 .demoButtons{
     width: 200px;
-    height: 63px;
+    height: 80px;
     background: #A6CE39;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    border-radius: 5px;
+    border-radius: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color:lightyellow;
+    margin-top: 20px;
 }
 .buttonContainer{
 
@@ -14,4 +18,32 @@
 .menuContainer{
     height: calc(85vh);
 
+}
+
+.listComponent{
+    text-align: left;
+    font-size: 32px;
+    margin: 40px;
+    background-color: #a6ce39;
+    width: 50%;
+    height: 85%;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    border-radius: 20px;
+}
+.videoContainer{
+    display: flex;
+    justify-content: center;
+    padding:80px;
+    flex-wrap:wrap;
+
+}
+.video{
+    width: 50%;
+    height: 50%;
+
+}
+.videoTitle{
+    color:white;
+    fontSize:42px;
 }

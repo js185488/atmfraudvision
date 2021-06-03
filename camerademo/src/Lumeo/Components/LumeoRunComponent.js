@@ -1,10 +1,13 @@
 
 import React, {Component, useEffect, useState} from 'react';
 import {getLumeoStatus, callLumeoState,callGetCash} from '../../messages/callLocalServer'
-import {getLumeoStreams} from '../lumeoMesages'
+import {getLumeoStreams, setDeployment} from '../lumeoMesages'
 import CashSlotComponent from '../../cameraComponets/teachableMachineComponent'
+import {getConfig} from "../config";
 let interval;
 let eventArr = [];
+const {app_id, lumeoBearerToken,hook_chain_id} = getConfig();
+
 
 class LumeoRunComponent extends Component {
     constructor(props) {
@@ -44,7 +47,7 @@ class LumeoRunComponent extends Component {
     }
     getStreams = async () => {
        const result = await getLumeoStreams()
-        const streamList = result.filter((stream)=> (stream.status==='online' &&  stream.stream_type === 'webrtc'))
+        const streamList = result.filter((stream)=> (stream.status==='online' &&  stream.stream_type === 'webrtc'|| stream.deployment_id===hook_chain_id))
         console.log(streamList)
         this.setState({streamLists:streamList})
 
@@ -83,30 +86,30 @@ class LumeoRunComponent extends Component {
 
 
         return (
-            <div className="DemoContainer" style={{top:180, width:"100%"}}>
-                <div style={{display:'flex', padding:80}}>
-                    <div>
+            <div className="DemoContainer" style={{height:'100%', width:"100%"}}>
+                <div className='videoContainer' >
+                    <div className='video'>
                     <CashSlotComponent callback={(res)=>{
                         console.log(res)
                         this.setCustomModel(res)
                     }}>
                     </CashSlotComponent>
-                    {this.state.predict && <p style={{color:'white'}}>{this.state.predict}</p>}
+                    {this.state.predict && <p style={{color:'white'}}>{
+                        this.state.predict}</p>}
                     </div>
 
-
-
-
-
-
                     { this.state.streamLists.map((stream)=>{
-                                return(<iframe src={stream.uri} style={{width: 600, height:400}} allow='autoplay'>
+                                return(
+                                    <div className='video'>
+                                    <iframe src={stream.uri} style={{width: 600, height:400}} allow='autoplay'>
                                         stream
                                         {stream.uri}
                                     </iframe>
+                                    </div>
 
                                 )
                             })}
+
 
 
 
@@ -116,7 +119,7 @@ class LumeoRunComponent extends Component {
                 {
                     this.state.objects.map((object) => {
                         return(
-                            <p>{object.label} & {object.probability}</p>
+                            <p style={{fontColor:'white'}}>{object.label} & {object.probability}</p>
                         )
                     })
 
@@ -129,9 +132,16 @@ class LumeoRunComponent extends Component {
                         }}>
                     Get Cash
                 </button>
+                <button className="demoButtons" onClick={async()=>{
+                    this.setState({streamLists:[]})
+                    await this.getStreams()}}>
+                    Stream Refresh
+                </button>
                 <button className="demoButtons"
                         onClick={()=>{
                             this.props.setDemo(null)
+                            setDeployment(hook_chain_id,'stopped')
+
                         }}>
                     Stop
                 </button>
