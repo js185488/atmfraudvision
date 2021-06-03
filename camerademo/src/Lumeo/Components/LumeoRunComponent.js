@@ -86,7 +86,7 @@ class LumeoRunComponent extends Component {
 
 
         return (
-            <div className="DemoContainer" style={{height:'100%', width:"100%"}}>
+            <div className="DemoContainer" style={{height:'100vh', width:"100vw"}}>
                 <div className='videoContainer' >
                     <div className='video'>
                     <CashSlotComponent callback={(res)=>{
@@ -101,7 +101,7 @@ class LumeoRunComponent extends Component {
                     { this.state.streamLists.map((stream)=>{
                                 return(
                                     <div className='video'>
-                                    <iframe src={stream.uri} style={{width: 600, height:400}} allow='autoplay'>
+                                    <iframe src={stream.uri} style={{width:380,height:285}} allow='autoplay'>
                                         stream
                                         {stream.uri}
                                     </iframe>
@@ -119,7 +119,7 @@ class LumeoRunComponent extends Component {
                 {
                     this.state.objects.map((object) => {
                         return(
-                            <p style={{fontColor:'white'}}>{object.label} & {object.probability}</p>
+                            <p style={{color:'white'}}>{object.label} & {object.probability}</p>
                         )
                     })
 

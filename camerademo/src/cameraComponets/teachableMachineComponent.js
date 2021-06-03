@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import ml5 from "ml5";
+import '../Lumeo/Components/Lumeo.css'
 const MODEL_URL = process.env.PUBLIC_URL + '/models/cashslotModel/model.json';
 const cloud_url = "https://teachablemachine.withgoogle.com/models/wwff063Lq/model.json";
 let interval;
@@ -76,7 +77,8 @@ class CashSlotComponent extends React.Component {
             <div>
                 <video
                     ref={this.videoRef}
-                    style={{width: 600, height:400,transform: "scale(-1, 1)" }}
+                    className='videoElement'
+                    style={{transform: "scale(-1, 1)" }}
                     //width="300"
                    // height="150"
                 />

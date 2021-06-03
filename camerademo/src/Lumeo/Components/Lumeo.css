@@ -34,16 +34,20 @@
 .videoContainer{
     display: flex;
     justify-content: center;
-    padding:80px;
+    padding:20px;
     flex-wrap:wrap;
 
 }
 .video{
     width: 50%;
     height: 50%;
+}
+.videoElement{
+    width: 380px;
 
 }
 .videoTitle{
     color:white;
     fontSize:42px;
 }
+
