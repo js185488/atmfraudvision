@@ -35,7 +35,7 @@ class LumeoRunComponent extends Component {
 
     };
     parseData = (currentEvent) =>{
-        if(currentEvent) {
+        if(currentEvent && currentEvent.event && currentEvent.event.meta) {
             const obj = currentEvent.event;
             const k = Object.keys(obj.meta);
             const o = obj.meta[String(k)];
@@ -106,7 +106,9 @@ class LumeoRunComponent extends Component {
                         this.setCustomModel(res)
                     }}>
                     </CashSlotComponent>
-                    {this.state.predict && <p style={{color:'white'}}>{
+                    {this.state.predict && <p style={{ color:(this.state.predict==='Finger jam'?'red':'white'),
+                        'font-size': (this.state.predict ==='Finger jam'? '24px':'normal'), 'font-weight':(this.state.predict==='Finger jam'? 'bold':'initial')
+                    }}>{
                         this.state.predict}</p>}
                     </div>
 
