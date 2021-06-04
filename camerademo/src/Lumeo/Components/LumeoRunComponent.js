@@ -35,15 +35,17 @@ class LumeoRunComponent extends Component {
 
     };
     parseData = (currentEvent) =>{
-        const str = JSON.stringify(currentEvent)
-        const n = str.search("video1.source_name");
-
-        if(n >-1){
-            const n1 = str.search("version");
-            const cleaned = JSON.parse(str.substring(n-2,n1-3))
-            console.log(cleaned)
-            this.setState({event:cleaned, objects:cleaned.objects, streamListLoaded:true})
+        if(currentEvent) {
+            const obj = currentEvent.event;
+            const k = Object.keys(obj.meta);
+            const o = obj.meta[String(k)];
+            console.log(o)
+            this.setState({event:o, objects:o.objects})
         }
+
+
+            //this.setState({event:cleaned, objects:cleaned.objects, streamListLoaded:true})
+
     }
     getStreams = async () => {
        const result = await getLumeoStreams()
@@ -57,7 +59,7 @@ class LumeoRunComponent extends Component {
 
      getMetaData = async () => {
         const currentEvent = await getLumeoStatus();
-        this.parseData(currentEvent)
+        await this.parseData(currentEvent)
 
     }
      startCapture = async () => {
@@ -70,10 +72,10 @@ class LumeoRunComponent extends Component {
     setCustomModel = (res) =>{
         if(res.length>0) {
             const max = Math.max(...res.map(o => o.confidence), 0);
-            console.log(max)
+            //console.log(max)
 
             const predict = res.filter(obj => (obj.confidence === max));
-            console.log('pre',predict)
+            //console.log('pre',predict)
             this.setState({predictionArr: res, predict: predict[0].label})
         }
     }
@@ -82,7 +84,17 @@ class LumeoRunComponent extends Component {
 
 
 
+
     render() {
+        let objectsDetected = null
+        if( this.state.objects.length>1) {
+            objectsDetected =
+                this.state.objects.map((object) => {
+                    return (
+                        <p style={{color: 'white'}}>{object.label} & {object.probability}</p>
+                    )
+                });
+        }
 
 
         return (
@@ -90,7 +102,7 @@ class LumeoRunComponent extends Component {
                 <div className='videoContainer' >
                     <div className='video'>
                     <CashSlotComponent callback={(res)=>{
-                        console.log(res)
+                        //console.log(res)
                         this.setCustomModel(res)
                     }}>
                     </CashSlotComponent>
@@ -105,25 +117,17 @@ class LumeoRunComponent extends Component {
                                         stream
                                         {stream.uri}
                                     </iframe>
+
                                     </div>
 
                                 )
                             })}
 
 
-
-
                 </div>
 
 
-                {
-                    this.state.objects.map((object) => {
-                        return(
-                            <p style={{color:'white'}}>{object.label} & {object.probability}</p>
-                        )
-                    })
 
-                }
 
                 <button className="demoButtons"
                         onClick={async ()=>{

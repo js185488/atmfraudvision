@@ -48,7 +48,7 @@ class LumeoMenuComponent extends Component {
                             <h3 style={{marginBottom:10}}>Normal activity</h3>
                             <li>Hit 'Continue'</li>
                             <li>Withdrawl some cash</li>
-                            <li>Milk</li>
+                            <li>Act 'normal'</li>
                         </ol>
                         <ol className="listComponent">
                             <h3 style={{marginBottom:10}}>Fraud activity</h3>
