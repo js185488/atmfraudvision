@@ -31,7 +31,14 @@ appRouter.use(bodyParser.json());
 appRouter.use(express.static('public'));
 appRouter.use(cors());
 
-
+function cleanMetaData(obj){
+    const k = Object.keys(obj.meta);
+    const o = obj.meta[String(k)];
+    const k2 = Object.keys(o);
+    const sourceId = o[String(k2[2])];
+    const metaData={[o.output_stream_id]:{source_id:sourceId,objects:o.objects, stream_id:o.output_stream_id}}
+    return metaData
+}
 function runLocalProgram(command){
     exec( command, (error, stdout, stderr) => {
         if (error) {
@@ -100,8 +107,9 @@ appRouter.use('/kill', function(req,res) {
 
 let varState={};
 appRouter.use('/lumeo', function(req,res){
-    console.log(req.body); // Call your action on the request here
-    varState=req.body
+    const cleaned= cleanMetaData(req.body)
+    varState={...varState, ...cleaned}
+    console.log(varState)
     res.status(200).end() // Responding is important
 });
 appRouter.use('/getlumeostatus', (req,res)=>{

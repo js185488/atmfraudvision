@@ -39,7 +39,10 @@ class LumeoRunComponent extends Component {
             const obj = currentEvent.event;
             const k = Object.keys(obj.meta);
             const o = obj.meta[String(k)];
-            console.log(o)
+            const k2 = Object.keys(o);
+            const sourceId = o[String(k2[2])];
+            const metaData={source_id:sourceId,objects:o}
+            console.log(metaData)
             this.setState({event:o, objects:o.objects})
         }
 
