@@ -36,7 +36,7 @@ function cleanMetaData(obj){
     const o = obj.meta[String(k)];
     const k2 = Object.keys(o);
     const sourceId = o[String(k2[2])];
-    const metaData={[o.output_stream_id]:{source_id:sourceId,objects:o.objects, stream_id:o.output_stream_id}}
+    const metaData={[o.output_stream_id]:{objects:o.objects, stream_id:o.output_stream_id,...o}}
     return metaData
 }
 function runLocalProgram(command){

@@ -20,7 +20,8 @@ class LumeoRunComponent extends Component {
             selectedStream:null,
             streamListLoaded:false,
             predictionArr:[],
-            predict:null
+            predict:null,
+            metaData:[],
 
 
         };
@@ -35,15 +36,30 @@ class LumeoRunComponent extends Component {
 
     };
     parseData = (currentEvent) =>{
-        if(currentEvent && currentEvent.event && currentEvent.event.meta) {
+        const newStreamList=[];
+        if(currentEvent && currentEvent.event ) {
             const obj = currentEvent.event;
-            const k = Object.keys(obj.meta);
-            const o = obj.meta[String(k)];
-            const k2 = Object.keys(o);
-            const sourceId = o[String(k2[2])];
-            const metaData={source_id:sourceId,objects:o}
-            console.log(metaData)
-            this.setState({event:o, objects:o.objects})
+            const k = Object.keys(obj);
+            const o = obj[String(k)];
+            const stream_obj_changed = []
+            for (let meta of k){
+                const m = obj[meta]
+                const st= this.state.streamLists.filter((stream)=>(stream.id===meta))
+                console.log(...st)
+                if(st.length>0) {
+                    newStreamList.push({...st[0], ...m})
+                    stream_obj_changed.push(meta)
+                }
+            }
+            let streamsUnchanged = this.state.streamLists
+            if(stream_obj_changed.length>0) {
+                for (let id of stream_obj_changed)
+                   streamsUnchanged= streamsUnchanged.filter((stream) => (id !== stream.id))
+            }
+            newStreamList.push(...streamsUnchanged)
+            //console.log('streams unchanged', streamsUnchanged)
+            //console.log(newStreamList)
+            this.setState({streamLists:newStreamList})
         }
 
 
@@ -72,7 +88,7 @@ class LumeoRunComponent extends Component {
      startCapture = async () => {
         interval = setInterval(async () => {
             await this.getMetaData()
-        }, 10500);
+        }, 1000);
 
     };
 
@@ -128,11 +144,17 @@ class LumeoRunComponent extends Component {
                                         stream
                                         {stream.uri}
                                     </iframe>
+                                        {stream.objects && stream.objects.map((object) => {
+                                        return (
+                                        <p style={{color: 'white'}}>{object.label} </p>
+                                        )
+                                    })}
 
                                     </div>
 
                                 )
-                            })}
+                            })
+                    }
 
 
                 </div>
