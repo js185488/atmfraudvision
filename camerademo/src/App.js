@@ -12,7 +12,9 @@ function App() {
         <div className="DemoContainer">
             {  !demo && <LumeoMenuComponent setDemo={setDemo}/>}
         {(demo==='lumeoDemo'?
-                <LumeoRunComponent setDemo={setDemo}/>: null)}
+                <LumeoRunComponent demo={demo} setDemo={setDemo}/>: null)}
+            {(demo==='savedVideo'?
+                <LumeoRunComponent setDemo={setDemo} demo={demo}/>: null)}
 
            </div>
     </div>

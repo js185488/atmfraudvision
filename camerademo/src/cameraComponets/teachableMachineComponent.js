@@ -31,7 +31,7 @@ class CashSlotComponent extends React.Component {
 
         interval = setInterval(async function(){
             //console.log("update", classifier);
-            if (classifier) {
+            if (classifier &&videoRef.current) {
 
                 classifier.classify(videoRef.current, (error, results) => {
                     if (error) {
@@ -47,8 +47,8 @@ class CashSlotComponent extends React.Component {
 
     componentWillUnmount() {
         clearInterval(interval);
-        this.videoRef = null
-        this.setState({videoRef : this.videoRef});
+        //this.videoRef = null
+        //this.setState({videoRef : this.videoRef});
 
 
 

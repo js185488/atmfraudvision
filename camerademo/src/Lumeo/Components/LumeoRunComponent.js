@@ -49,7 +49,11 @@ class LumeoRunComponent extends Component {
     }
     getStreams = async () => {
        const result = await getLumeoStreams()
-        const streamList = result.filter((stream)=> (stream.status==='online' &&  stream.stream_type === 'webrtc' && stream.deployment_id!==hook_chain_id))
+
+        const streamList = result.filter((stream)=> ((this.props.demo ==='lumeoDemo'?
+            (stream.status==='online' &&  stream.stream_type === 'webrtc' && stream.deployment_id!==hook_chain_id):
+            (stream.deployment_id===hook_chain_id))) )
+
         console.log(streamList)
         this.setState({streamLists:streamList})
 
@@ -101,11 +105,13 @@ class LumeoRunComponent extends Component {
             <div className="DemoContainer" style={{height:'100vh', width:"100vw"}}>
                 <div className='videoContainer' >
                     <div className='video'>
-                    <CashSlotComponent callback={(res)=>{
-                        //console.log(res)
-                        this.setCustomModel(res)
-                    }}>
-                    </CashSlotComponent>
+                        { this.props.demo ==='lumeoDemo' &&
+                            <CashSlotComponent callback={(res) => {
+                                //console.log(res)
+                                this.setCustomModel(res)
+                            }}>
+                            </CashSlotComponent>
+                        }
                     {this.state.predict && <p style={{ color:(this.state.predict==='Finger jam'?'red':'white'),
                         'font-size': (this.state.predict ==='Finger jam'? '24px':'normal'), 'font-weight':(this.state.predict==='Finger jam'? 'bold':'initial')
                     }}>{
@@ -131,13 +137,13 @@ class LumeoRunComponent extends Component {
 
 
 
-                <button className="demoButtons"
+                { this.props.demo ==='lumeoDemo' && <button className="demoButtons"
                         onClick={async ()=>{
                             console.log('Getting Cash')
                             await callGetCash()
                         }}>
                     Get Cash
-                </button>
+                </button>}
                 <button className="demoButtons" onClick={async()=>{
                     this.setState({streamLists:[]})
                     await this.getStreams()}}>

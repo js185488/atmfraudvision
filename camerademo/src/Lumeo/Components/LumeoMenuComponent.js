@@ -31,9 +31,16 @@ class LumeoMenuComponent extends Component {
                 <button className="demoButtons"
                 onClick={() => {
                 this.setState({start: true})
-                    setDeployment(hook_chain_id,'running')
+                    setDeployment(hook_chain_id,'running')//savedVideo
             }}>
-                Start
+                Live demo
+                </button>
+                <button className="demoButtons"
+                        onClick={() => {
+                            this.props.setDemo('savedVideo')
+                            setDeployment(hook_chain_id,'running')
+                        }}>
+                    Recorded demo
                 </button>
             </>
             }
