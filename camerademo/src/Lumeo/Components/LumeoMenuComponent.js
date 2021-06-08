@@ -43,7 +43,7 @@ class LumeoMenuComponent extends Component {
                     <h2 style={{color:'white', paddingTop:50, fontSize:56,  margin:0}}>Demo Rules</h2>
                     <div style={{padding:0,display:"flex",  justifyContent: 'center',}}>
 
-                        <div style={{ display:"flex",  justifyContent: 'center',backgroundColor:'white', width:'70%'}}>
+                        <div style={{ display:"flex",  justifyContent: 'center',backgroundColor:'white', width:'80%'}}>
                         <ol className="listComponent">
                             <h3 style={{marginBottom:10}}>Normal activity</h3>
                             <li>Hit 'Continue'</li>
@@ -54,9 +54,11 @@ class LumeoMenuComponent extends Component {
                             <h3 style={{marginBottom:10}}>Fraud activity</h3>
 
                             <li>Stick finger in cash slot</li>
-                            <li>Cover any of the cameras</li>
+                            <li>Cover the top camera</li>
                             <li>Bring multiple people in front of ATM</li>
                             <li>Pick up weapon</li>
+                            <li>Hit get cash multiple times</li>
+
                         </ol>
                         </div>
                     </div>

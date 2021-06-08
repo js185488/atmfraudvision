@@ -49,7 +49,7 @@ class LumeoRunComponent extends Component {
     }
     getStreams = async () => {
        const result = await getLumeoStreams()
-        const streamList = result.filter((stream)=> (stream.status==='online' &&  stream.stream_type === 'webrtc'|| stream.deployment_id===hook_chain_id))
+        const streamList = result.filter((stream)=> (stream.status==='online' &&  stream.stream_type === 'webrtc' && stream.deployment_id!==hook_chain_id))
         console.log(streamList)
         this.setState({streamLists:streamList})
 
@@ -115,7 +115,7 @@ class LumeoRunComponent extends Component {
                     { this.state.streamLists.map((stream)=>{
                                 return(
                                     <div className='video'>
-                                    <iframe src={stream.uri} style={{width:380,height:285}} allow='autoplay'>
+                                    <iframe src={stream.uri} style={{width:'90%',height:'100%'}} allow='autoplay'>
                                         stream
                                         {stream.uri}
                                     </iframe>
