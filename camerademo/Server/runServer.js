@@ -107,6 +107,7 @@ appRouter.use('/kill', function(req,res) {
 
 let varState={};
 appRouter.use('/lumeo', function(req,res){
+    console.log("input",req.body)
     const cleaned= cleanMetaData(req.body)
     varState={...varState, ...cleaned}
     console.log(varState)
