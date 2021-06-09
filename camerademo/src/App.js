@@ -10,7 +10,7 @@ function App() {
 
     <div className="App">
         <div className="DemoContainer">
-            {  !demo && <LumeoMenuComponent setDemo={setDemo}/>}
+            { <LumeoMenuComponent demo={demo} setDemo={setDemo}/>}
         {(demo==='lumeoDemo'?
                 <LumeoRunComponent demo={demo} setDemo={setDemo}/>: null)}
             {(demo==='savedVideo'?

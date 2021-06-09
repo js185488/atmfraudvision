@@ -16,17 +16,15 @@
 }
 
 .menuContainer{
-    height: calc(85vh);
+
 
 }
 
 .listComponent{
     text-align: left;
-    font-size: 32px;
-    margin: 40px;
+    font-size: 28px;
+    margin: 20px;
     background-color: #a6ce39;
-    width: 50%;
-    height: 85%;
     padding-right: 10px;
     padding-bottom: 10px;
     border-radius: 20px;
