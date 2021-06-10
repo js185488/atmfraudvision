@@ -78,7 +78,8 @@ class CashSlotComponent extends React.Component {
                 <video
                     ref={this.videoRef}
                     className='videoElement'
-                    style={{transform: "scale(-1, 1)" }}
+                    style={{transform: 'rotate(90deg)'
+                    }}
                     //width="300"
                    // height="150"
                 />

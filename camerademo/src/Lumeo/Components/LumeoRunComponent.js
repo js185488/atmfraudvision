@@ -35,6 +35,7 @@ class LumeoRunComponent extends Component {
         clearInterval(interval);
 
     };
+
     parseData = (currentEvent) =>{
         const newStreamList=[];
         if(currentEvent && currentEvent.event ) {
@@ -110,7 +111,7 @@ class LumeoRunComponent extends Component {
 
     render() {
         let objectsDetected = null
-        if( this.state.objects.length>1) {
+        if (this.state.objects.length > 1) {
             objectsDetected =
                 this.state.objects.map((object) => {
                     return (
@@ -121,63 +122,68 @@ class LumeoRunComponent extends Component {
 
 
         return (
-            <div className="DemoContainer" style={{height:'100vh', width:"100vw"}}>
-                <div className='videoContainer' >
-                    <div className='video'>
-                        { this.props.demo ==='lumeoDemo' &&
-                            <CashSlotComponent callback={(res) => {
-                                //console.log(res)
-                                this.setCustomModel(res)
-                            }}>
-                            </CashSlotComponent>
+            <div className="DemoContainer" style={{height: '100vh', width: "100vw"}}>
+                <div className='videoContainer'>
+                    {/* <div className='video'>
+                        {this.props.demo === 'lumeoDemo' &&
+                        <CashSlotComponent callback={(res) => {
+                            //console.log(res)
+                            this.setCustomModel(res)
+                        }}>
+                        </CashSlotComponent>
                         }
-                    {this.state.predict && <p style={{ color:(this.state.predict==='Finger jam'?'red':'white'),
-                        'font-size': (this.state.predict ==='Finger jam'? '24px':'normal'), 'font-weight':(this.state.predict==='Finger jam'? 'bold':'initial')
-                    }}>{
-                        this.state.predict}</p>}
+                        {this.state.predict &&
+                        <p className={(this.state.predict === 'Finger jam' ? 'fraudDetectedText' : 'nonFraudText')}>
+                            {this.state.predict}</p>}
                     </div>
+                    */}
+                    {this.state.streamLists.map((stream) => {
+                        return (
+                            <div className='video'>
+                                <iframe src={stream.uri} style={{width: '90%', height: '100%'}} allow='autoplay'>
+                                    stream
+                                    {stream.uri}
+                                </iframe>
+                                {stream.fraud_detected && <p className='fraudDetectedText'>{stream.fraud_detected}</p>}
+                                {stream.objects && stream.objects.map((object) => {
+                                    return (
+                                        <>
+                                            <p className='nonFraudText'>{object.label} </p>
+                                            {
+                                                object.attributes && object.attributes.length > 0 &&
+                                                <p className='nonFraudText'>{object.attributes[0].label}</p>
+                                            }
+                                        </>
+                                    )
+                                })}
 
-                    { this.state.streamLists.map((stream)=>{
-                                return(
-                                    <div className='video'>
-                                    <iframe src={stream.uri} style={{width:'90%',height:'100%'}} allow='autoplay'>
-                                        stream
-                                        {stream.uri}
-                                    </iframe>
-                                        {stream.objects && stream.objects.map((object) => {
-                                        return (
-                                        <p style={{color: 'white'}}>{object.label} </p>
-                                        )
-                                    })}
+                            </div>
 
-                                    </div>
-
-                                )
-                            })
+                        )
+                    })
                     }
 
 
                 </div>
 
 
-
-
-                { this.props.demo ==='lumeoDemo' && <button className="demoButtons"
-                        onClick={async ()=>{
-                            console.log('Getting Cash')
-                            await callGetCash()
-                        }}>
+                {this.props.demo === 'lumeoDemo' && <button className="demoButtons"
+                                                            onClick={async () => {
+                                                                console.log('Getting Cash')
+                                                                await callGetCash()
+                                                            }}>
                     Get Cash
                 </button>}
-                <button className="demoButtons" onClick={async()=>{
-                    this.setState({streamLists:[]})
-                    await this.getStreams()}}>
+                <button className="demoButtons" onClick={async () => {
+                    this.setState({streamLists: []})
+                    await this.getStreams()
+                }}>
                     Stream Refresh
                 </button>
                 <button className="demoButtons"
-                        onClick={()=>{
+                        onClick={() => {
                             this.props.setDemo(null)
-                            setDeployment(hook_chain_id,'stopped')
+                            setDeployment(hook_chain_id, 'stopped')
 
                         }}>
                     Stop
