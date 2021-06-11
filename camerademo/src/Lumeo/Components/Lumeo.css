@@ -61,3 +61,12 @@
     color:white;
     font-weight: initial;
 }
+.iframe{
+    width: 90%;
+    height: 100%;
+}
+.iframeCashSlot{
+    height: 400px;
+    width: 400px;
+    transform: rotate(90deg);
+}

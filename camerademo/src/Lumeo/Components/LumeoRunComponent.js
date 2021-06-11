@@ -106,7 +106,9 @@ class LumeoRunComponent extends Component {
 
 
 
-
+    checkStreamId=(stream_id)=>{
+        return stream_id ==="9ad13ad8-f66f-4e7b-94ef-3c0331e0acc7"
+    }
 
 
     render() {
@@ -137,10 +139,10 @@ class LumeoRunComponent extends Component {
                             {this.state.predict}</p>}
                     </div>
                     */}
-                    {this.state.streamLists.map((stream) => {
+                    {this.state.streamLists.map((stream) => {//"9ad13ad8-f66f-4e7b-94ef-3c0331e0acc7"
                         return (
                             <div className='video'>
-                                <iframe src={stream.uri} style={{width: '90%', height: '100%'}} allow='autoplay'>
+                                <iframe src={stream.uri} style={{width:(this.checkStreamId(stream.stream_id) ? '400px': '90%'), height:(this.checkStreamId(stream.stream_id) ? '400px': '100%'),transform:(this.checkStreamId(stream.stream_id) ? 'rotate(90deg)':'none')}} allow='autoplay'>
                                     stream
                                     {stream.uri}
                                 </iframe>
