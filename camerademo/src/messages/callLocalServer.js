@@ -70,3 +70,28 @@ export const handleResponse = () => {
         throw new Error(response.status);
     };
 };
+
+export const clearLumeoStatus =() =>{
+    const url ='http://localhost:8000/clearlumeostatus'
+    const payloadGeneric = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            'Access-Control-Allow-Origin':'*'
+
+        }};
+    return fetch(url, payloadGeneric)
+        .then(handleResponse()).then((result) => {
+            return {
+                event: result,
+
+            };
+        }).catch((error) => {
+            console.log(error)
+            return {
+                event : null,
+
+            };
+        });
+};
+

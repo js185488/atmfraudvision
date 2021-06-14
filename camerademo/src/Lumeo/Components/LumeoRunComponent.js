@@ -1,12 +1,16 @@
 
 import React, {Component, useEffect, useState} from 'react';
-import {getLumeoStatus, callLumeoState,callGetCash} from '../../messages/callLocalServer'
-import {getLumeoStreams, setDeployment} from '../lumeoMesages'
+import {getLumeoStatus, callLumeoState,callGetCash,clearLumeoStatus} from '../../messages/callLocalServer'
+import {getLumeoStreams, setDeployment,getDeploymentStatus} from '../lumeoMesages'
+import Lottie from "react-lottie";
+import VideoLoading from "../../icons/lottiefiles/videoLoading.json";
+
 import CashSlotComponent from '../../cameraComponets/teachableMachineComponent'
 import {getConfig} from "../config";
+import eye from "../../icons/lottiefiles/eye.json";
 let interval;
 let eventArr = [];
-const {app_id, lumeoBearerToken,hook_chain_id} = getConfig();
+const {app_id, lumeoBearerToken,hook_chain_id,atm_fraud_id} = getConfig();
 
 
 class LumeoRunComponent extends Component {
@@ -22,6 +26,7 @@ class LumeoRunComponent extends Component {
             predictionArr:[],
             predict:null,
             metaData:[],
+            deploymentLoading:true
 
 
         };
@@ -30,6 +35,7 @@ class LumeoRunComponent extends Component {
     componentWillMount = async () => {
         this.startCapture();
         this.getStreams();
+        this.checkDeploymentStatus();
     };
     componentWillUnmount() {
         clearInterval(interval);
@@ -79,6 +85,17 @@ class LumeoRunComponent extends Component {
 
     }
 
+    checkDeploymentStatus = async ()=>{
+        const deployId=this.getDeploymentId()
+        const status = await getDeploymentStatus(deployId)
+        if(status && status==='running') {
+            this.setState({deploymentLoading: false})
+            this.getStreams()
+        }else {
+            this.checkDeploymentStatus()
+        }
+    }
+
 
 
      getMetaData = async () => {
@@ -107,7 +124,10 @@ class LumeoRunComponent extends Component {
 
 
     checkStreamId=(stream_id)=>{
-        return stream_id ==="9ad13ad8-f66f-4e7b-94ef-3c0331e0acc7"
+        return stream_id ==="9ad13ad8-f66f-4e7b-94ef-3c0331e0acc7"//cash slot stream_id
+    }
+    getDeploymentId =()=>{
+        return (this.props.demo ==='lumeoDemo'?atm_fraud_id:hook_chain_id)
     }
 
 
@@ -139,7 +159,17 @@ class LumeoRunComponent extends Component {
                             {this.state.predict}</p>}
                     </div>
                     */}
-                    {this.state.streamLists.map((stream) => {//"9ad13ad8-f66f-4e7b-94ef-3c0331e0acc7"
+                    {(this.state.deploymentLoading?
+                        <div style={{display:'flex',flexDirection:'column'}}>
+                            < h2 style={{color:'white', paddingTop:10, fontSize:56}}>Loading Demo</h2>
+                        <Lottie options={{animationData: VideoLoading, loop:true, autoplay:true}}
+                                                           speed={1}
+                                                           height={550}
+                                                           width={550}/>
+
+
+                        </div>:
+                    this.state.streamLists.map((stream) => {//"9ad13ad8-f66f-4e7b-94ef-3c0331e0acc7"
                         return (
                             <div className='video'>
                                 <iframe src={stream.uri} style={{width:(this.checkStreamId(stream.stream_id) ? '400px': '90%'), height:(this.checkStreamId(stream.stream_id) ? '400px': '100%'),transform:(this.checkStreamId(stream.stream_id) ? 'rotate(90deg)':'none')}} allow='autoplay'>
@@ -162,8 +192,8 @@ class LumeoRunComponent extends Component {
                             </div>
 
                         )
-                    })
-                    }
+                    }))
+                    }}
 
 
                 </div>
@@ -177,15 +207,24 @@ class LumeoRunComponent extends Component {
                     Get Cash
                 </button>}
                 <button className="demoButtons" onClick={async () => {
+                    clearLumeoStatus()
+
                     this.setState({streamLists: []})
                     await this.getStreams()
+                    setDeployment(this.getDeploymentId(),'running')
+                    //setDeployment(hook_chain_id, 'running')
+
                 }}>
-                    Stream Refresh
+                    Refresh Video
                 </button>
                 <button className="demoButtons"
+                        style={{backgroundColor:'red'}}
                         onClick={() => {
                             this.props.setDemo(null)
-                            setDeployment(hook_chain_id, 'stopped')
+                            clearLumeoStatus()
+
+                            setDeployment(this.getDeploymentId(), 'stopped')
+                            //setDeployment(atm_fraud_id,'stopped')
 
                         }}>
                     Stop

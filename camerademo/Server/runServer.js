@@ -121,6 +121,11 @@ appRouter.use('/getlumeostatus', (req,res)=>{
      // Responding is important
 
 });
+appRouter.use('/clearlumeostatus', function (req,res){
+    varState={}
+    res.status(200).end()
+
+})
 
 
 

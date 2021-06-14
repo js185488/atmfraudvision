@@ -6,7 +6,7 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';import './Lumeo.css
 import {setDeployment} from '../lumeoMesages'
 import {getConfig} from "../config";
 
-const {app_id, lumeoBearerToken,hook_chain_id} = getConfig();
+const {app_id, lumeoBearerToken,hook_chain_id,atm_fraud_id} = getConfig();
 
 
 class LumeoMenuComponent extends Component {
@@ -32,7 +32,9 @@ class LumeoMenuComponent extends Component {
                 onClick={() => {
                    // setDeployment(hook_chain_id,'running')//savedVideo
                     this.props.setDemo('lumeoDemo')
-                    }}>
+                    setDeployment(atm_fraud_id,'running')
+
+                }}>
                 Live demo
                 </button>
                 <button className="demoButtons"
