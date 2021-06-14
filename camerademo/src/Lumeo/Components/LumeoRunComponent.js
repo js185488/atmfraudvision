@@ -197,6 +197,9 @@ class LumeoRunComponent extends Component {
 
 
                 </div>
+                {
+                    !this.state.deploymentLoading&&
+                    <>
 
 
                 {this.props.demo === 'lumeoDemo' && <button className="demoButtons"
@@ -229,6 +232,7 @@ class LumeoRunComponent extends Component {
                         }}>
                     Stop
                 </button>
+                </>}
 
             </div>
         )
