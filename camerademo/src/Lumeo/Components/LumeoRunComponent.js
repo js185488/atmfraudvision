@@ -3,7 +3,9 @@ import React, {Component, useEffect, useState} from 'react';
 import {getLumeoStatus, callLumeoState,callGetCash,clearLumeoStatus} from '../../messages/callLocalServer'
 import {getLumeoStreams, setDeployment,getDeploymentStatus} from '../lumeoMesages'
 import Lottie from "react-lottie";
-import VideoLoading from "../../icons/lottiefiles/videoLoading.json";
+//import VideoLoading from "../../icons/lottiefiles/videoLoading.json";
+import VideoLoading from "../../icons/fraud_detection_2.json";
+
 
 import CashSlotComponent from '../../cameraComponets/teachableMachineComponent'
 import {getConfig} from "../config";
@@ -163,9 +165,9 @@ class LumeoRunComponent extends Component {
                         <div style={{display:'flex',flexDirection:'column'}}>
                             < h2 style={{color:'white', paddingTop:10, fontSize:56}}>Loading Demo</h2>
                         <Lottie options={{animationData: VideoLoading, loop:true, autoplay:true}}
-                                                           speed={1}
-                                                           height={550}
-                                                           width={550}/>
+                                                           speed={.75}
+                                                           height={400}
+                                                           width={600}/>
 
 
                         </div>:
