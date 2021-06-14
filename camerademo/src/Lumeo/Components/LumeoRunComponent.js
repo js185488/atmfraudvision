@@ -163,7 +163,7 @@ class LumeoRunComponent extends Component {
                     */}
                     {(this.state.deploymentLoading ?
                         <div style={{display: 'flex', flexDirection: 'column'}}>
-                            < h2 style={{color: 'white', paddingTop: 10, fontSize: 56}}>Loading Demo</h2>
+                            < h2 style={{color: 'white', paddingTop: 10, fontSize: 56}}>Loading ATM Fraud Demo</h2>
                             <Lottie options={{animationData: VideoLoading, loop: true, autoplay: true}}
                                     speed={.75}
                                     height={400}
@@ -193,7 +193,7 @@ class LumeoRunComponent extends Component {
                                             <>
                                                 {/*<p className='nonFraudText'>{object.label} </p>*/}
                                                 {object.attributes && object.attributes.length > 0 && object.attributes[0].label === 'finger_jam' &&
-                                                <p className='fraudDetectedText'>{object.attributes[0].label}</p>}
+                                                <p className='fraudDetectedText'>Finger jam Detected!</p>}
 
                                                 {
                                                     object.attributes && object.attributes.length > 0 &&
