@@ -191,7 +191,7 @@ class LumeoRunComponent extends Component {
                                     {stream.objects && stream.objects.map((object) => {
                                         return (
                                             <>
-                                                <p className='nonFraudText'>{object.label} </p>
+                                                {/*<p className='nonFraudText'>{object.label} </p>*/}
                                                 {object.attributes && object.attributes.length > 0 && object.attributes[0].label === 'finger_jam' &&
                                                 <p className='fraudDetectedText'>{object.attributes[0].label}</p>}
 
