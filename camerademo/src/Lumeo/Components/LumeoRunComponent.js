@@ -161,80 +161,91 @@ class LumeoRunComponent extends Component {
                             {this.state.predict}</p>}
                     </div>
                     */}
-                    {(this.state.deploymentLoading?
-                        <div style={{display:'flex',flexDirection:'column'}}>
-                            < h2 style={{color:'white', paddingTop:10, fontSize:56}}>Loading Demo</h2>
-                        <Lottie options={{animationData: VideoLoading, loop:true, autoplay:true}}
-                                                           speed={.75}
-                                                           height={400}
-                                                           width={600}/>
+                    {(this.state.deploymentLoading ?
+                        <div style={{display: 'flex', flexDirection: 'column'}}>
+                            < h2 style={{color: 'white', paddingTop: 10, fontSize: 56}}>Loading Demo</h2>
+                            <Lottie options={{animationData: VideoLoading, loop: true, autoplay: true}}
+                                    speed={.75}
+                                    height={400}
+                                    width={600}/>
 
 
-                        </div>:
-                    this.state.streamLists.map((stream) => {//"9ad13ad8-f66f-4e7b-94ef-3c0331e0acc7"
-                        return (
-                            <div className='video'>
-                                <iframe src={stream.uri} style={{width:(this.checkStreamId(stream.stream_id) ? '400px': '90%'), height:(this.checkStreamId(stream.stream_id) ? '400px': '100%'),transform:(this.checkStreamId(stream.stream_id) ? 'rotate(90deg)':'none')}} allow='autoplay'>
-                                    stream
-                                    {stream.uri}
-                                </iframe>
-                                {stream.fraud_detected && <p className='fraudDetectedText'>{stream.fraud_detected}</p>}
-                                {stream.objects && stream.objects.map((object) => {
-                                    return (
-                                        <>
-                                            <p className='nonFraudText'>{object.label} </p>
-                                            {
-                                                object.attributes && object.attributes.length > 0 &&
-                                                <p className='nonFraudText'>{object.attributes[0].label}</p>
-                                            }
-                                        </>
-                                    )
-                                })}
+                        </div> :
+                        this.state.streamLists.map((stream) => {//"9ad13ad8-f66f-4e7b-94ef-3c0331e0acc7"
+                            return (
+                                <div className='video'>
+                                    <iframe src={stream.uri} style={{
+                                        width: (this.checkStreamId(stream.stream_id) ? '400px' : '90%'),
+                                        height: (this.checkStreamId(stream.stream_id) ? '400px' : '100%'),
+                                        transform: (this.checkStreamId(stream.stream_id) ? 'rotate(90deg)' : 'none')
+                                    }} allow='autoplay'>
+                                        stream
+                                        {stream.uri}
+                                    </iframe>
+                                    {stream.fraud_detected &&
+                                    <p className='fraudDetectedText'>{stream.fraud_detected}</p>}
+                                    {stream.camera_message && <p className='nonFraudText'>{stream.camera_message}</p>}
+                                    {stream.vehicle_message && <p className='nonFraudText'>{stream.vehicle_message}</p>}
+                                    {stream.persons_message && <p className='nonFraudText'>{stream.persons_message}</p>}
+                                    {stream.objects && stream.objects.map((object) => {
+                                        return (
+                                            <>
+                                                <p className='nonFraudText'>{object.label} </p>
+                                                {object.attributes && object.attributes.length > 0 && object.attributes[0].label === 'finger_jam' &&
+                                                <p className='fraudDetectedText'>{object.attributes[0].label}</p>}
 
-                            </div>
+                                                {
+                                                    object.attributes && object.attributes.length > 0 &&
+                                                    <p className='nonFraudText'>{object.attributes[0].label}</p>
+                                                }
+                                            </>
+                                        )
+                                    })}
 
-                        )
-                    }))
+                                </div>
+
+                            )
+                        }))
                     }}
 
 
                 </div>
                 {
-                    !this.state.deploymentLoading&&
+                    !this.state.deploymentLoading &&
                     <>
 
 
-                {this.props.demo === 'lumeoDemo' && <button className="demoButtons"
-                                                            onClick={async () => {
-                                                                console.log('Getting Cash')
-                                                                await callGetCash()
-                                                            }}>
-                    Get Cash
-                </button>}
-                <button className="demoButtons" onClick={async () => {
-                    clearLumeoStatus()
-
-                    this.setState({streamLists: []})
-                    await this.getStreams()
-                    setDeployment(this.getDeploymentId(),'running')
-                    //setDeployment(hook_chain_id, 'running')
-
-                }}>
-                    Refresh Video
-                </button>
-                <button className="demoButtons"
-                        style={{backgroundColor:'red'}}
-                        onClick={() => {
-                            this.props.setDemo(null)
+                        {this.props.demo === 'lumeoDemo' && <button className="demoButtons"
+                                                                    onClick={async () => {
+                                                                        console.log('Getting Cash')
+                                                                        await callGetCash()
+                                                                    }}>
+                            Get Cash
+                        </button>}
+                        <button className="demoButtons" onClick={async () => {
                             clearLumeoStatus()
 
-                            setDeployment(this.getDeploymentId(), 'stopped')
-                            //setDeployment(atm_fraud_id,'stopped')
+                            this.setState({streamLists: []})
+                            await this.getStreams()
+                            setDeployment(this.getDeploymentId(), 'running')
+                            //setDeployment(hook_chain_id, 'running')
 
                         }}>
-                    Stop
-                </button>
-                </>}
+                            Refresh Video
+                        </button>
+                        <button className="demoButtons"
+                                style={{backgroundColor: 'red'}}
+                                onClick={() => {
+                                    this.props.setDemo(null)
+                                    clearLumeoStatus()
+
+                                    setDeployment(this.getDeploymentId(), 'stopped')
+                                    //setDeployment(atm_fraud_id,'stopped')
+
+                                }}>
+                            Stop
+                        </button>
+                    </>}
 
             </div>
         )
