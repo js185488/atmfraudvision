@@ -187,6 +187,7 @@ class LumeoRunComponent extends Component {
                                     {stream.camera_message && <p className='nonFraudText'>{stream.camera_message}</p>}
                                     {stream.vehicle_message && <p className='nonFraudText'>{stream.vehicle_message}</p>}
                                     {stream.persons_message && <p className='nonFraudText'>{stream.persons_message}</p>}
+                                    {stream.weapons_message && <p className='nonFraudText'>{stream.weapons_message}</p>}
                                     {stream.objects && stream.objects.map((object) => {
                                         return (
                                             <>
