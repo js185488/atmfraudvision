@@ -172,7 +172,7 @@ appRouter.use('/setCash', function(req,res) {
 
 
 appRouter.use('/filemetadata', async function(req,res){
-    console.log("input",req.body.file_id)
+   // console.log("input",req.body.file_id)
     const result = await getFileMetaData(req.body.file_id)
 
     res.json(result).end() // Responding is important
