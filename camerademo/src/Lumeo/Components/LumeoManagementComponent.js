@@ -6,7 +6,15 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
-import {Avatar, ListItemAvatar} from "@material-ui/core";
+import {
+    Avatar, Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    ListItemAvatar, Typography
+} from "@material-ui/core";
 import PageviewIcon from '@material-ui/icons/Pageview';
 
 let interval;
@@ -27,7 +35,11 @@ class LumeoManagementComponent extends Component {
             helpDialog: false,
             streamLists:[],
             fileList:[],
-            fileListLoading:true
+            fileListLoading:true,
+            selectedFile:null,
+            showVideo:false,
+            videoSrc:null,
+            loadingVideo:true,
         }
     }
     componentWillMount = async () => {
@@ -98,17 +110,18 @@ class LumeoManagementComponent extends Component {
                 const metaData = await getLumeoMetadata(meta.metadata_url)
                 //console.log('iside mapp',metaData)
                 const eventMap = metaData.meta
-                //console.log(eventMap)
+                console.log(eventMap)
                 if(eventMap) {
                     const {eventArr, videoMessage, fraudBool} = await this.parseEvent(eventMap)
                     const dateTimestamp = new Date(file.created_at)
-                    return {...meta, ...file, eventArr, ...videoMessage, fraudBool}
+                    return {...meta, ...file, eventArr, ...videoMessage,dateTimestamp, fraudBool}
                 }
 
             })
         )
 
     }
+
     getFiles = async () => {
         const result = await getFileList(atm_fraud_id)
         //console.log('fileList result', result)
@@ -158,12 +171,10 @@ class LumeoManagementComponent extends Component {
                 <div>
 
                     <List style={{width:'100%', }}>
-                        <ListItem>
-                            <ListItemText>
-                                {!this.state.fileListLoading &&<p>{this.state.fileList[0].id}</p>}
-                                Hello
-                            </ListItemText>
-                        </ListItem>
+                        <Typography variant="h6" style={{color:'white', width:'100%', textAlign:'left'}}>
+                            Suspicious Activity Alerts
+                        </Typography>
+
 
                         {!this.state.fileListLoading &&this.state.fileList.map((file,key) =>{
 
@@ -173,25 +184,23 @@ class LumeoManagementComponent extends Component {
 
                                         (file.fraudBool ?
                                                 <>
-                                                    <Divider variant="inset" component="li" />
+                                                    <Divider style={{color:'grey'}} component="li" />
 
-                                                    <ListItem style={{width: '100%', display:'flex' }}>
+                                                    <ListItem style={{width: '100%', display:'flex' }} onClick={()=>{
+                                                        this.setState({selectedFile:file, showVideo:true})
+                                                    }}>
                                                         <ListItemAvatar>
                                                             <Avatar style={{backgroundColor: 'red'}}>
                                                                 <PageviewIcon />
                                                             </Avatar>
                                                         </ListItemAvatar>
-                                                        <ListItemText style={{ display:'flex'}}>
-                                                            {file.camera_message &&
-                                                            <p className='nonFraudText'>{file.camera_message}</p>}
+                                                        <ListItemText className='nonFraudText' style={{ display:'flex'}}>
+                                                            {file.camera_message && ' Camera Blocked |'}
                                                             {file.vehicle_message &&
-                                                            <p className='nonFraudText'>{file.vehicle_message}</p>}
-                                                            {file.persons_message &&
-                                                            <p className='nonFraudText'>{file.persons_message}</p>}
-                                                            {file.weapons_message &&
-                                                            <p className='nonFraudText'>{file.weapons_message}</p>}
-                                                            {file.loitering_message &&
-                                                            <p className='nonFraudText'>{file.loitering_message}</p>}
+                                                            file.vehicle_message}
+                                                            {file.persons_message &&file.persons_message}
+                                                            {file.weapons_message &&' Weapon Detected |'}
+                                                            {file.loitering_message && ' Loitering Detected'}
                                                         </ListItemText>
                                                     </ListItem>
                                                 </>: null
@@ -212,6 +221,42 @@ class LumeoManagementComponent extends Component {
 
 
             </div>
+                <Dialog
+                    fullScreen={false}
+                    open={this.state.selectedFile}
+                    aria-labelledby="alert-dialog-slide-title"
+                    aria-describedby="alert-dialog-slide-description"
+                    maxWidth={'lg'}
+                    fullWidth={true}
+                    style={{height:800}}
+
+                >
+                    {this.state.selectedFile &&
+                        <>
+                    <DialogTitle >Fraud Detected </DialogTitle>
+
+                            <DialogContent>
+                                <DialogContentText>{`${this.state.selectedFile.dateTimestamp.toLocaleString()}`}</DialogContentText>
+
+
+
+                                <video width="60%"  controls autoplay >
+                        <source src={this.state.selectedFile && this.state.selectedFile.data_url  } type="video/ogg"/>
+                        <source src={this.state.selectedFile &&this.state.selectedFile.data_url} type="video/mp4" />
+
+                    </video>
+                        </DialogContent>
+                    <DialogActions>
+                        <Button variant="outlined" color='black' style={{fontSize: '32px',backgroundColor:'#A6CE39','text-transform': 'none'}}
+                            onClick={()=>{
+                            this.setState({selectedFile:null})
+                        }} >
+                            Close
+                        </Button>
+                    </DialogActions>
+                    </>
+                    }
+                </Dialog>
 
             </div>
 

@@ -174,15 +174,17 @@ appRouter.use('/setCash', function(req,res) {
 appRouter.use('/filemetadata', async function(req,res){
    // console.log("input",req.body.file_id)
     const result = await getFileMetaData(req.body.file_id)
+    //console.log('metadata results',result)
 
     res.json(result).end() // Responding is important
 });
 
 
 const getFileMetaData=(url)=>{
-
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
     const payloadGeneric = {
         method: "GET",
+        credentials: 'same-origin',
         headers: {
             "Content-Type": "application/json; charset=utf-8",
 
