@@ -158,8 +158,14 @@ class LumeoManagementComponent extends Component {
 
         return (
             <div style={{height: '100%'}}>
-                <div className="videoContainer">
+                <div className="videoContainer" style={{height:'50%'}}>
+                    {this.state.streamLists.length>1 &&
+                    <Typography variant="h6" style={{color: 'white', width: '100%', textAlign: 'left'}}>
+                        Live Camera Feed
+                    </Typography>}
+
                     {
+
                         this.state.streamLists.map((stream) => {//"9ad13ad8-f66f-4e7b-94ef-3c0331e0acc7"
                             return (
                                 <div className='video'>
@@ -168,7 +174,7 @@ class LumeoManagementComponent extends Component {
                                         width: '90%',
                                         height: '100%',
                                         transform: 'none'
-                                    }} allow='autoplay *; fullscreen *' allowFullScreen='true'>
+                                    }} allow='autoplay'>
                                         stream
                                         {stream.uri}
                                     </iframe>
@@ -180,7 +186,7 @@ class LumeoManagementComponent extends Component {
                             )
                         })
                     }
-                    <div style={{width: '100%'}}>
+                    <div style={{width: '100%', marginTop:80}}>
                         {!this.state.fileListLoading &&
 
                         <List style={{width: '100%', border: 'red', borderStyle: 'solid'}}>
