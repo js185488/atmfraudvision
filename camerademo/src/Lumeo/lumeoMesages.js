@@ -9,6 +9,15 @@ export const handleResponse = () => {
     };
 };
 
+export const handleResponseFile = () => {
+    return function(response) {
+        console.log((response))
+        if(response.ok) {
+            return response.buffer();
+        }
+        throw new Error(response.status);
+    };
+};
 
 export const getLumeoStreams= () => {
     const {app_id, lumeoBearerToken} = getConfig();
@@ -81,6 +90,99 @@ export const setDeployment =(deployment_id, state) =>{
             };
         });
 };
+
+export const getFileList=(deployment_id)=>{
+    const {app_id, lumeoBearerToken,hook_chain_id} = getConfig();
+
+    const url =` https://api.lumeo.com/v1/apps/${app_id}/files?deployment_ids[]=${deployment_id}`;
+    const payloadGeneric = {
+        method: "GET",
+        credentials: 'same-origin',
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            "Authorization": `Bearer ${lumeoBearerToken}`
+
+        },
+    };
+    return fetch(url, payloadGeneric)
+        .then(handleResponse()).then((result) => {
+            return result;
+        }).catch((error) => {
+            return {
+                message:''
+            };
+        });
+}
+export const getFileURL=(file_id)=>{
+    const {app_id, lumeoBearerToken,hook_chain_id} = getConfig();
+
+    const url = `https://api.lumeo.com/v1/apps/${app_id}/files/${file_id}`
+    const payloadGeneric = {
+        method: "GET",
+        credentials: 'same-origin',
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            "Authorization": `Bearer ${lumeoBearerToken}`
+
+        },
+    };
+    return fetch(url, payloadGeneric)
+        .then(handleResponse()).then((result) => {
+            return result;
+        }).catch((error) => {
+            return {
+                message:''
+            };
+        });
+
+}
+
+export const getFileMetaData=(file_id)=>{
+    const {app_id, lumeoBearerToken,hook_chain_id} = getConfig();
+
+    const url = `https://api.lumeo.com/v1/apps/${app_id}/files/${file_id}/data`
+    const payloadGeneric = {
+        method: "GET",
+        credentials: 'same-origin',
+        mode:'no-cors',
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            "Authorization": `Bearer ${lumeoBearerToken}`
+
+        },
+    };
+    return fetch(url, payloadGeneric)
+        .then(handleResponse()).then((result) => {
+            return result;
+        }).catch((error) => {
+            return {
+                message:''
+            };
+        });
+
+}
+export const getAmazonMeta= (meta)=>{
+    //const {app_id, lumeoBearerToken,hook_chain_id} = getConfig();
+
+    //const url = `https://api.lumeo.com/v1/apps/${app_id}/files/${file_id}/data`
+    console.log(meta.metadata_url)
+    const url =meta.metadata_url
+    const payloadGeneric = {
+        method: "GET",
+        mode:'no-cors',
+        redirect: 'follow'
+    };
+    return fetch(url, payloadGeneric)
+        .then(response => response.json()).then((result) => {
+            console.log('metadata', result)
+            return result;
+        }).catch((error) => {
+            return {
+                message:error
+            };
+        });
+
+}
 
 
 export const getCash=()=>{

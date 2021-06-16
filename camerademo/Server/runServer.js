@@ -5,6 +5,7 @@ const {exec} = require('child_process');
 const express = require('express');
 var spawn = require("child_process").spawn,child;
 var multer  = require('multer');
+const fetch = require("node-fetch");
 
 const appRouter = express();
 // eslint-disable-next-line new-cap
@@ -168,3 +169,41 @@ appRouter.use('/setCash', function(req,res) {
     res.send('good')
 
 });
+
+
+appRouter.use('/filemetadata', async function(req,res){
+    console.log("input",req.body.file_id)
+    const result = await getFileMetaData(req.body.file_id)
+
+    res.json(result).end() // Responding is important
+});
+
+
+const getFileMetaData=(url)=>{
+
+    const payloadGeneric = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+
+        },
+    };
+    return fetch(url, payloadGeneric)
+        .then(handleResponse()).then((result) => {
+            return result;
+        }).catch((error) => {
+            return {
+                message:error.message
+            };
+        });
+
+}
+
+const handleResponse = () => {
+    return function(response) {
+        if(response.ok) {
+            return response.json();
+        }
+        throw new Error(response.status);
+    };
+};

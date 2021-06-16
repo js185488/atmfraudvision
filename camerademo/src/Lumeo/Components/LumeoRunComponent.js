@@ -3,16 +3,11 @@ import React, {Component, useEffect, useState} from 'react';
 import {getLumeoStatus, callLumeoState,callGetCash,clearLumeoStatus} from '../../messages/callLocalServer'
 import {getLumeoStreams, setDeployment,getDeploymentStatus} from '../lumeoMesages'
 import Lottie from "react-lottie";
-//import VideoLoading from "../../icons/lottiefiles/videoLoading.json";
 import VideoLoading from "../../icons/fraud_detection_2.json";
-
-
-import CashSlotComponent from '../../cameraComponets/teachableMachineComponent'
+//import CashSlotComponent from '../../cameraComponets/teachableMachineComponent'
 import {getConfig} from "../config";
-import eye from "../../icons/lottiefiles/eye.json";
 let interval;
-let eventArr = [];
-const {app_id, lumeoBearerToken,hook_chain_id,atm_fraud_id} = getConfig();
+const {hook_chain_id,atm_fraud_id} = getConfig();
 
 
 class LumeoRunComponent extends Component {
@@ -82,7 +77,7 @@ class LumeoRunComponent extends Component {
             (stream.status==='online' &&  stream.stream_type === 'webrtc' && stream.deployment_id!==hook_chain_id):
             (stream.deployment_id===hook_chain_id))) )
 
-        console.log(streamList)
+        //console.log(streamList)
         this.setState({streamLists:streamList})
 
     }
@@ -230,8 +225,6 @@ class LumeoRunComponent extends Component {
                             this.setState({streamLists: []})
                             await this.getStreams()
                             setDeployment(this.getDeploymentId(), 'running')
-                            //setDeployment(hook_chain_id, 'running')
-
                         }}>
                             Refresh Video
                         </button>

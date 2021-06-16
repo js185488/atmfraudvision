@@ -94,4 +94,25 @@ export const clearLumeoStatus =() =>{
             };
         });
 };
+export const getLumeoMetadata =(fileid) =>{
+    const url ='http://localhost:8000/filemetadata'
+    const payloadGeneric = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            'Access-Control-Allow-Origin':'*'
 
+        },
+        body:JSON.stringify({file_id:fileid})
+    };
+    return fetch(url, payloadGeneric)
+        .then(handleResponse()).then((result) => {
+            return  result;
+        }).catch((error) => {
+            console.log(error)
+            return {
+                event : null,
+
+            };
+        });
+};
