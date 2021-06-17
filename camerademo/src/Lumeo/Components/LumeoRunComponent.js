@@ -172,7 +172,7 @@ class LumeoRunComponent extends Component {
                                     <iframe src={stream.uri} style={{
                                         width: (this.checkStreamId(stream.stream_id) ? '400px' : '90%'),
                                         height: (this.checkStreamId(stream.stream_id) ? '400px' : '100%'),
-                                        transform: (this.checkStreamId(stream.stream_id) ? 'rotate(90deg)' : 'scale(-1, 1)')
+                                        transform: (this.checkStreamId(stream.stream_id) ? 'rotate(90deg)' : 'none')
                                     }} allow='autoplay'>
                                         stream
                                         {stream.uri}
