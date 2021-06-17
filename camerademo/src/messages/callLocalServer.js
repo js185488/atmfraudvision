@@ -1,4 +1,4 @@
-const serverIP = '153.73.151.162'
+const serverIP = '153.73.253.204'
 
 
 export function callPythonCoverDemo () {
