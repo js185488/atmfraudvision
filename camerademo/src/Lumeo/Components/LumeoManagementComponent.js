@@ -144,13 +144,13 @@ class LumeoManagementComponent extends Component {
 
     getFiles = async () => {
         const file_limit = 20;
-        const limit_recent_days = 1;
-        const result = await getLumeoFileList(atm_fraud_id, file_limit)
+        const limit_recent_days = 5;
+        const result = await getLumeoFileList(hook_chain_id, file_limit)
         //console.log('fileList result', result)
 
 
         let fileList = result.filter((file) =>
-            (file.deployment_id === atm_fraud_id))
+            (file.deployment_id === hook_chain_id))
         const today = new Date()
         const startDate = new Date(today)
         startDate.setDate(startDate.getDate() - limit_recent_days)
@@ -223,7 +223,7 @@ class LumeoManagementComponent extends Component {
                                     <>
                                         {
 
-                                            (file.fraudBool ?
+                                            (file.fraudBool||true ?
                                                     <>
                                                         <Divider style={{color: 'grey'}}/>
 
@@ -246,7 +246,7 @@ class LumeoManagementComponent extends Component {
                                                                     minute: '2-digit'
                                                                 })}
                                                                 {"  " + file.dateTimestamp.toLocaleString().split(',')[0] + ": "}
-                                                                Detected:
+                                                                Fraud Detected
                                                                 {file.camera_message && ' Camera Blocked |'}
                                                                 {file.vehicle_message && file.vehicle_message}
                                                                 {file.persons_message && file.persons_message}
