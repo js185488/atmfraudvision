@@ -143,7 +143,7 @@ class LumeoManagementComponent extends Component {
     }
 
     getFiles = async () => {
-        const file_limit = 3;
+        const file_limit = 20;
         const limit_recent_days = 1;
         const result = await getLumeoFileList(atm_fraud_id, file_limit)
         //console.log('fileList result', result)
@@ -191,9 +191,9 @@ class LumeoManagementComponent extends Component {
                                 <div className='video'>
 
                                     <iframe src={stream.uri} style={{
-                                        width: (this.checkStreamId(stream.stream_id) ? '400px' : '90%'),
-                                        height: (this.checkStreamId(stream.stream_id) ? '400px' : '100%'),
-                                        transform: (this.checkStreamId(stream.stream_id) ? 'rotate(90deg)' : 'scale(-1, 1)')
+                                        width: (this.checkStreamId(stream.id) ? '400px' : '90%'),
+                                        height: (this.checkStreamId(stream.id) ? '400px' : '100%'),
+                                        transform: (this.checkStreamId(stream.id) ? 'rotate(90deg)' : 'none')
                                     }} allow='autoplay'>
                                         stream
                                         {stream.uri}
