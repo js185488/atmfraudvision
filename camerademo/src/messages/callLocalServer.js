@@ -98,7 +98,73 @@ export const clearLumeoStatus =() =>{
         });
 };
 export const getLumeoMetadata =(fileid) =>{
-    const url =`http://153.73.151.162:8000/filemetadata`
+    const url =`http://${serverIP}:8000/filemetadata`
+    const payloadGeneric = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            'Access-Control-Allow-Origin':'*'
+
+        },
+        body:JSON.stringify({file_id:fileid})
+    };
+    return fetch(url, payloadGeneric)
+        .then(handleResponse()).then((result) => {
+            return  result;
+        }).catch((error) => {
+            console.log(error)
+            return {
+                event : null,
+
+            };
+        });
+};
+export const getLumeoFileList =(deployment_id,file_limit) =>{
+    const url =`http://${serverIP}:8000/fileList`
+    const payloadGeneric = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            'Access-Control-Allow-Origin':'*'
+
+        },
+        body:JSON.stringify({deployment_id,file_limit})
+    };
+    return fetch(url, payloadGeneric)
+        .then(handleResponse()).then((result) => {
+            return  result;
+        }).catch((error) => {
+            console.log(error)
+            return {
+                event : null,
+
+            };
+        });
+};
+export const getLumeoStreams =() =>{
+    const url =`http://${serverIP}:8000/streams`
+    const payloadGeneric = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            'Access-Control-Allow-Origin':'*'
+
+        },
+    };
+    return fetch(url, payloadGeneric)
+        .then(handleResponse()).then((result) => {
+            return  result;
+        }).catch((error) => {
+            console.log(error)
+            return {
+                event : null,
+
+            };
+        });
+};
+
+export const getLumeoFileURL =(fileid) =>{
+    const url =`http://${serverIP}:8000/fileUrl`
     const payloadGeneric = {
         method: "POST",
         headers: {

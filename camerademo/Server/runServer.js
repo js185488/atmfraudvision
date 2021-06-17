@@ -1,19 +1,27 @@
 
 // Load the http module to create an http server.
+
 const http = require('http');
 const {exec} = require('child_process');
 const express = require('express');
 var spawn = require("child_process").spawn,child;
 var multer  = require('multer');
 const fetch = require("node-fetch");
-
 const appRouter = express();
 // eslint-disable-next-line new-cap
 const app =express.Router();
 const fs = require('fs');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const configStore = {
+    lumeoBearerToken:'$lbXCXADeoTc7//79dqw1fRjbuUAdftdp',
+    //lumeoBearerToken:'$ijQQqZYlZ9+U8hOlA7nVAuBGkvawHbQ7',//(ATM fraud app)
+    //app_id:'8d38f078-6899-428f-beb6-0fb0c068cdb9', //(ATM fraud app)
+    app_id:'bfd962d4-806e-46c7-88e9-be291399561e',
+    hook_chain_id: 'c9503097-c06e-444f-9ae5-8d617e2ae6cd', //deployment ids
+    atm_fraud_id:'43b2f838-8a1a-4dbd-940c-fd998a635dc7',
 
+};
 let status=[]
 const port = 8000;
 // Create a server
@@ -179,6 +187,28 @@ appRouter.use('/filemetadata', async function(req,res){
     res.json(result).end() // Responding is important
 });
 
+appRouter.use('/fileList', async function(req,res){
+    // console.log("input",req.body.file_id)
+    const result = await getFileList(req.body.deployment_id,req.body.file_limit)
+    //console.log('metadata results',result)
+
+    res.json(result).end() // Responding is important
+});
+appRouter.use('/streams', async function(req,res){
+    // console.log("input",req.body.file_id)
+    const result = await getLumeoStreams()
+    //console.log('metadata results',result)
+
+    res.json(result).end() // Responding is important
+});
+
+appRouter.use('/fileUrl', async function(req,res){
+    // console.log("input",req.body.file_id)
+    const result = await geFtileURL(req.body.file_id)
+    //console.log('metadata results',result)
+
+    res.json(result).end() // Responding is important
+});
 
 const getFileMetaData=(url)=>{
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
@@ -201,6 +231,30 @@ const getFileMetaData=(url)=>{
 
 }
 
+
+const getFileList=(deployment_id,file_limit)=>{
+    const {app_id, lumeoBearerToken,hook_chain_id} = configStore;
+
+    const url =` https://api.lumeo.com/v1/apps/${app_id}/files?deployment_ids[]=${deployment_id}&limit=${file_limit}`;
+    const payloadGeneric = {
+        method: "GET",
+        credentials: 'same-origin',
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            "Authorization": `Bearer ${lumeoBearerToken}`
+
+        },
+    };
+    return fetch(url, payloadGeneric)
+        .then(handleResponse()).then((result) => {
+            return result;
+        }).catch((error) => {
+            return {
+                message:''
+            };
+        });
+}
+
 const handleResponse = () => {
     return function(response) {
         if(response.ok) {
@@ -209,3 +263,50 @@ const handleResponse = () => {
         throw new Error(response.status);
     };
 };
+const getLumeoStreams= () => {
+    const {app_id, lumeoBearerToken} =configStore;
+    const url = `https://api.lumeo.com/v1/apps/${app_id}/streams`;
+
+    const payloadGeneric = {
+        method: "GET",
+        credentials: 'same-origin',
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            "Authorization": `Bearer ${lumeoBearerToken}`
+
+        }
+    };
+    return fetch(url, payloadGeneric)
+        .then(handleResponse()).then((result) => {
+            return result;
+        }).catch((error) => {
+            return {
+                streamsList : []
+            };
+        });
+};
+
+
+const geFtileURL=(file_id)=>{
+    const {app_id, lumeoBearerToken,hook_chain_id} = configStore;
+
+    const url = `https://api.lumeo.com/v1/apps/${app_id}/files/${file_id}`
+    const payloadGeneric = {
+        method: "GET",
+        credentials: 'same-origin',
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            "Authorization": `Bearer ${lumeoBearerToken}`
+
+        },
+    };
+    return fetch(url, payloadGeneric)
+        .then(handleResponse()).then((result) => {
+            return result;
+        }).catch((error) => {
+            return {
+                message:''
+            };
+        });
+
+}

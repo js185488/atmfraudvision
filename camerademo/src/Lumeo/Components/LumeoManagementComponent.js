@@ -1,5 +1,5 @@
-import {getLumeoStreams, getFileList, getFileMetaData, getFileURL, getAmazonMeta} from "../lumeoMesages";
-import {getLumeoMetadata} from "../../messages/callLocalServer"
+import { getFileList, getFileMetaData, getFileURL, getAmazonMeta} from "../lumeoMesages";
+import {getLumeoMetadata,getLumeoFileList,getLumeoStreams,getLumeoFileURL} from "../../messages/callLocalServer"
 import React, {Component} from "react";
 import {getConfig} from "../config";
 import List from '@material-ui/core/List';
@@ -112,7 +112,7 @@ class LumeoManagementComponent extends Component {
 
         Promise.all(
             fileList.map(async file => {
-                const meta = await getFileURL(file.id)
+                const meta = await getLumeoFileURL(file.id)
                 console.log(file.created_at, meta.metadata_url, meta.data_url)
                 const metaData = await getLumeoMetadata(meta.metadata_url)
                 //console.log('iside mapp',metaData)
@@ -145,7 +145,7 @@ class LumeoManagementComponent extends Component {
     getFiles = async () => {
         const file_limit = 3;
         const limit_recent_days = 1;
-        const result = await getFileList(atm_fraud_id, file_limit)
+        const result = await getLumeoFileList(atm_fraud_id, file_limit)
         //console.log('fileList result', result)
 
 
