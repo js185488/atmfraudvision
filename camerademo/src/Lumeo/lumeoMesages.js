@@ -91,10 +91,10 @@ export const setDeployment =(deployment_id, state) =>{
         });
 };
 
-export const getFileList=(deployment_id)=>{
+export const getFileList=(deployment_id,file_limit)=>{
     const {app_id, lumeoBearerToken,hook_chain_id} = getConfig();
 
-    const url =` https://api.lumeo.com/v1/apps/${app_id}/files?deployment_ids[]=${deployment_id}`;
+    const url =` https://api.lumeo.com/v1/apps/${app_id}/files?deployment_ids[]=${deployment_id}&limit=${file_limit}`;
     const payloadGeneric = {
         method: "GET",
         credentials: 'same-origin',

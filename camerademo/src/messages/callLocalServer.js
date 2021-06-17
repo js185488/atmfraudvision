@@ -98,7 +98,7 @@ export const clearLumeoStatus =() =>{
         });
 };
 export const getLumeoMetadata =(fileid) =>{
-    const url =`http://${serverIP}:8000/filemetadata`
+    const url =`http://153.73.151.162:8000/filemetadata`
     const payloadGeneric = {
         method: "POST",
         headers: {

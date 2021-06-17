@@ -46,51 +46,54 @@ class LumeoManagementComponent extends Component {
 
     componentWillMount = async () => {
         this.getStreams();
-        await this.getFiles()
+        this.getFiles()
     };
-    parseEvent = (eventMap) => {
-        const videoTimeStamp = Object.keys(eventMap);
-        const eventArr = []
-        let fraudBool = false;
-        let videoMessage = {//initalizing videoMessage
-            weapons_message: '',
-            camera_message: '',
-            persons_message: '',
-            vehicle_message: '',
-            loitering_message: ''
-        }
-        for (let i = 0; i < videoTimeStamp.length; i++) {
-            const objects = eventMap[String(videoTimeStamp[i])].objects
-            const stream_id = eventMap[String(videoTimeStamp[i])].output_stream_id
-            const fraud_detected = eventMap[String(videoTimeStamp[i])].fraud_detected
-            const camera_message = eventMap[String(videoTimeStamp[i])].camera_message
-            const vehicle_message = eventMap[String(videoTimeStamp[i])].persons_message
-            const persons_message = eventMap[String(videoTimeStamp[i])].persons_message
-            const weapons_message = eventMap[String(videoTimeStamp[i])].weapons_message
-            const loitering_message = eventMap[String(videoTimeStamp[i])].loitering_message
+    parseEvent = async (eventMap, id) => {
 
-            eventArr.push({
-                videoTimeStamp: videoTimeStamp[i], fraud_detected, camera_message,
-                vehicle_message, persons_message, weapons_message, loitering_message, stream_id, objects
-            }) //adding messages with timestamp, objects, and stream_id
-
-            let messageLogic = (weapons_message || camera_message || persons_message
-                || vehicle_message || loitering_message || fraud_detected)
-            if (!fraudBool && messageLogic) {
-                fraudBool = true
+        return new Promise(resolve => {
+            const videoTimeStamp = Object.keys(eventMap);
+            const eventArr = []
+            let fraudBool = false;
+            let videoMessage = {//initalizing videoMessage
+                weapons_message: '',
+                camera_message: '',
+                persons_message: '',
+                vehicle_message: '',
+                loitering_message: ''
             }
-            if (messageLogic) {
-                videoMessage = { //catching messages if they appear, setting messages to older messages if not
-                    weapons_message: (weapons_message ? weapons_message : videoMessage.weapons_message),
-                    camera_message: (camera_message ? camera_message : videoMessage.camera_message),
-                    persons_message: (persons_message ? persons_message : videoMessage.persons_message),
-                    vehicle_message: (vehicle_message ? vehicle_message : videoMessage.vehicle_message),
-                    loitering_message: (loitering_message ? loitering_message : videoMessage.loitering_message)
+            for (let i = 0; i < videoTimeStamp.length; i++) {
+                const objects = eventMap[String(videoTimeStamp[i])].objects
+                const stream_id = eventMap[String(videoTimeStamp[i])].output_stream_id
+                const fraud_detected = eventMap[String(videoTimeStamp[i])].fraud_detected
+                const camera_message = eventMap[String(videoTimeStamp[i])].camera_message
+                const vehicle_message = eventMap[String(videoTimeStamp[i])].persons_message
+                const persons_message = eventMap[String(videoTimeStamp[i])].persons_message
+                const weapons_message = eventMap[String(videoTimeStamp[i])].weapons_message
+                const loitering_message = eventMap[String(videoTimeStamp[i])].loitering_message
+
+                eventArr.push({
+                    videoTimeStamp: videoTimeStamp[i], fraud_detected, camera_message,
+                    vehicle_message, persons_message, weapons_message, loitering_message, stream_id, objects
+                }) //adding messages with timestamp, objects, and stream_id
+
+                let messageLogic = (weapons_message || camera_message || persons_message
+                    || vehicle_message || loitering_message || fraud_detected)
+                if (!fraudBool && messageLogic) {
+                    fraudBool = true
+                }
+                if (messageLogic) {
+                    videoMessage = { //catching messages if they appear, setting messages to older messages if not
+                        weapons_message: (weapons_message ? weapons_message : videoMessage.weapons_message),
+                        camera_message: (camera_message ? camera_message : videoMessage.camera_message),
+                        persons_message: (persons_message ? persons_message : videoMessage.persons_message),
+                        vehicle_message: (vehicle_message ? vehicle_message : videoMessage.vehicle_message),
+                        loitering_message: (loitering_message ? loitering_message : videoMessage.loitering_message)
+                    }
                 }
             }
-        }
-        return {eventArr, videoMessage, fraudBool}
-
+            console.log(videoMessage)
+            resolve({eventArr, videoMessage, fraudBool, id})
+        })
     }
 
     getStreams = async () => {
@@ -104,29 +107,45 @@ class LumeoManagementComponent extends Component {
 
     }
 
-    parseArray = async (fileList) => {
+    parseArray = (fileList) => {
+        const fileListarr = []
 
-        return await Promise.all(
+        Promise.all(
             fileList.map(async file => {
                 const meta = await getFileURL(file.id)
-                //console.log(meta)
+                console.log(file.created_at, meta.metadata_url, meta.data_url)
                 const metaData = await getLumeoMetadata(meta.metadata_url)
                 //console.log('iside mapp',metaData)
                 const eventMap = metaData.meta
-                console.log(eventMap)
+                //console.log(eventMap)
                 if (eventMap) {
-                    const {eventArr, videoMessage, fraudBool} = await this.parseEvent(eventMap)
-                    const dateTimestamp = new Date(file.created_at)
-                    return {...meta, ...file, eventArr, ...videoMessage, dateTimestamp, fraudBool}
+                    await this.parseEvent(eventMap, meta.metadata_url).then((result) => {
+                        const {eventArr, videoMessage, fraudBool, id} = result
+                        const dateTimestamp = new Date(file.created_at)
+                        //console.log(dateTimestamp)
+                        //console.log("---------", meta.metadata_url ===id)
+                        fileListarr.push({...meta, ...file, eventArr, ...videoMessage, dateTimestamp, fraudBool})
+
+                    })
+
                 }
 
             })
-        )
+        ).then(() => {
+            //return fileListarr
+            console.log("file List Array", fileListarr)
+            const sortedDateFilter = fileListarr.sort((a, b) => b.dateTimestamp - a.dateTimestamp)
+            //console.log(fileListarr[0])
+            this.setState({fileList: fileListarr, fileListLoading: false})
+        })
+
 
     }
 
     getFiles = async () => {
-        const result = await getFileList(atm_fraud_id)
+        const file_limit = 3;
+        const limit_recent_days = 1;
+        const result = await getFileList(atm_fraud_id, file_limit)
         //console.log('fileList result', result)
 
 
@@ -134,7 +153,7 @@ class LumeoManagementComponent extends Component {
             (file.deployment_id === atm_fraud_id))
         const today = new Date()
         const startDate = new Date(today)
-        startDate.setDate(startDate.getDate() - 10)
+        startDate.setDate(startDate.getDate() - limit_recent_days)
         const endDay = startDate.getTime()
 
         fileList = fileList.filter(file => {
@@ -143,14 +162,15 @@ class LumeoManagementComponent extends Component {
         });
 
         //fileList = fileList.slice(0,10);
-        await this.parseArray(fileList).then((newArr) => {
-            console.log(newArr)
-            console.log(newArr[0])
-            this.setState({fileList: newArr, fileListLoading: false})
-
-        })
+        await this.parseArray(fileList)//.then((newArr) => {
 
 
+        //})
+
+
+    }
+    checkStreamId=(stream_id)=>{
+        return stream_id ==="9ad13ad8-f66f-4e7b-94ef-3c0331e0acc7"//cash slot stream_id
     }
 
     render() {
@@ -158,8 +178,8 @@ class LumeoManagementComponent extends Component {
 
         return (
             <div style={{height: '100%'}}>
-                <div className="videoContainer" style={{height:'50%'}}>
-                    {this.state.streamLists.length>1 &&
+                <div className="videoContainer" style={{height: '50%'}}>
+                    {this.state.streamLists.length > 1 &&
                     <Typography variant="h6" style={{color: 'white', width: '100%', textAlign: 'left'}}>
                         Live Camera Feed
                     </Typography>}
@@ -171,9 +191,9 @@ class LumeoManagementComponent extends Component {
                                 <div className='video'>
 
                                     <iframe src={stream.uri} style={{
-                                        width: '90%',
-                                        height: '100%',
-                                        transform: 'none'
+                                        width: (this.checkStreamId(stream.stream_id) ? '400px' : '90%'),
+                                        height: (this.checkStreamId(stream.stream_id) ? '400px' : '100%'),
+                                        transform: (this.checkStreamId(stream.stream_id) ? 'rotate(90deg)' : 'scale(-1, 1)')
                                     }} allow='autoplay'>
                                         stream
                                         {stream.uri}
@@ -186,8 +206,8 @@ class LumeoManagementComponent extends Component {
                             )
                         })
                     }
-                    <div style={{width: '100%', marginTop:80}}>
-                        {!this.state.fileListLoading &&
+                    <div style={{width: '100%', marginTop: 80}}>
+                        {!this.state.fileListLoading && this.state.fileList.length > 1 &&
 
                         <List style={{width: '100%', border: 'red', borderStyle: 'solid'}}>
 
@@ -197,8 +217,7 @@ class LumeoManagementComponent extends Component {
                             </Typography>
 
 
-
-                            {!this.state.fileListLoading && this.state.fileList.map((file, key) => {
+                            {!this.state.fileListLoading && this.state.fileList.length > 1 && this.state.fileList.map((file, key) => {
 
                                 return (
                                     <>
@@ -229,8 +248,7 @@ class LumeoManagementComponent extends Component {
                                                                 {"  " + file.dateTimestamp.toLocaleString().split(',')[0] + ": "}
                                                                 Detected:
                                                                 {file.camera_message && ' Camera Blocked |'}
-                                                                {file.vehicle_message &&
-                                                                file.vehicle_message}
+                                                                {file.vehicle_message && file.vehicle_message}
                                                                 {file.persons_message && file.persons_message}
                                                                 {file.weapons_message && ' Weapon Detected |'}
                                                                 {file.loitering_message && ' Loitering Detected'}
@@ -282,8 +300,8 @@ class LumeoManagementComponent extends Component {
                             </video>
                         </DialogContent>
                         <DialogActions>
-                            <Button variant="outlined" color='black'
-                                    style={{fontSize: '32px', backgroundColor: '#A6CE39', 'text-transform': 'none'}}
+                            <Button variant="outlined"
+                                    style={{fontSize: '32px', backgroundColor: '#A6CE39', textTransform: 'none'}}
                                     onClick={() => {
                                         this.setState({selectedFile: null})
                                     }}>
