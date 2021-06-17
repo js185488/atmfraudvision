@@ -194,7 +194,7 @@ class LumeoManagementComponent extends Component {
                                         width: (this.checkStreamId(stream.id) ? '400px' : '90%'),
                                         height: (this.checkStreamId(stream.id) ? '400px' : '100%'),
                                         transform: (this.checkStreamId(stream.id) ? 'rotate(90deg)' : 'none')
-                                    }} allow='autoplay'>
+                                    }} allow='autoPlay'>
                                         stream
                                         {stream.uri}
                                     </iframe>
@@ -275,7 +275,7 @@ class LumeoManagementComponent extends Component {
                 </div>
                 <Dialog
                     fullScreen={false}
-                    open={this.state.selectedFile}
+                    open={this.state.selectedFile !==null}
                     aria-labelledby="alert-dialog-slide-title"
                     aria-describedby="alert-dialog-slide-description"
                     maxWidth={'lg'}
