@@ -42,7 +42,7 @@ export async function callGetCash () {
 
 }
 export const getLumeoStatus = () => {
-    const url = `http://localhost:8000/getlumeostatus`;
+    const url = `http://${serverIP}:8000/getlumeostatus`;
 
     const payloadGeneric = {
         method: "GET",

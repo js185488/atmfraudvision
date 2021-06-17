@@ -1,7 +1,7 @@
 
 import React, {Component, useEffect, useState} from 'react';
-import {getLumeoStatus, callLumeoState,callGetCash,clearLumeoStatus} from '../../messages/callLocalServer'
-import {getLumeoStreams, setDeployment,getDeploymentStatus} from '../lumeoMesages'
+import {getLumeoStatus, callLumeoState,callGetCash,clearLumeoStatus,getLumeoStreams} from '../../messages/callLocalServer'
+import { setDeployment,getDeploymentStatus} from '../lumeoMesages'
 import Lottie from "react-lottie";
 import VideoLoading from "../../icons/fraud_detection_2.json";
 //import CashSlotComponent from '../../cameraComponets/teachableMachineComponent'
@@ -212,15 +212,18 @@ class LumeoRunComponent extends Component {
                     <>
 
 
-                        {this.props.demo === 'lumeoDemo' && <button className="demoButtons"
-                                                                    onClick={async () => {
-                                                                        console.log('Getting Cash')
-                                                                        await callGetCash()
-                                                                    }}>
+                        {this.props.demo === 'lumeoDemo' &&
+                            <button className="demoButtons"
+                                    hidden={window.location.hostname!=='localhost'}
+                                    onClick={async () => {
+                                              console.log('Getting Cash')
+                                               await callGetCash()
+                                                           }}>
                             Get Cash
                         </button>}
                         <button className="demoButtons" onClick={async () => {
                             clearLumeoStatus()
+
 
                             this.setState({streamLists: []})
                             await this.getStreams()
@@ -229,6 +232,7 @@ class LumeoRunComponent extends Component {
                             Refresh Video
                         </button>
                         <button className="demoButtons"
+                                hidden={window.location.hostname!=='localhost'}
                                 style={{backgroundColor: 'red'}}
                                 onClick={() => {
                                     this.props.setDemo(null)
