@@ -189,7 +189,7 @@ appRouter.use('/filemetadata', async function(req,res){
 
 appRouter.use('/fileList', async function(req,res){
     // console.log("input",req.body.file_id)
-    const result = await getFileList(req.body.deployment_id,req.body.file_limit)
+    const result = await getFileList(req.body.deployment_id1,req.body.deployment_id2,req.body.file_limit)
     //console.log('metadata results',result)
 
     res.json(result).end() // Responding is important
@@ -232,10 +232,10 @@ const getFileMetaData=(url)=>{
 }
 
 
-const getFileList=(deployment_id,file_limit)=>{
+const getFileList=(deployment_id1,deployment_id2,file_limit)=>{
     const {app_id, lumeoBearerToken,hook_chain_id} = configStore;
 
-    const url =` https://api.lumeo.com/v1/apps/${app_id}/files?deployment_ids[]=${deployment_id}&limit=${file_limit}`;
+    const url =` https://api.lumeo.com/v1/apps/${app_id}/files?deployment_ids[]=${deployment_id1}&&deployment_ids[]=${deployment_id2}&&limit=${file_limit}`;
     const payloadGeneric = {
         method: "GET",
         credentials: 'same-origin',

@@ -144,13 +144,13 @@ class LumeoManagementComponent extends Component {
 
     getFiles = async () => {
         const file_limit = 20;
-        const limit_recent_days = 5;
-        const result = await getLumeoFileList(hook_chain_id, file_limit)
+        const limit_recent_days = 1;
+        const result = await getLumeoFileList(hook_chain_id, atm_fraud_id, file_limit)
         //console.log('fileList result', result)
 
 
         let fileList = result.filter((file) =>
-            (file.deployment_id === hook_chain_id))
+            (file.deployment_id === hook_chain_id|| file.deployment_id===atm_fraud_id))
         const today = new Date()
         const startDate = new Date(today)
         startDate.setDate(startDate.getDate() - limit_recent_days)
@@ -246,7 +246,7 @@ class LumeoManagementComponent extends Component {
                                                                     minute: '2-digit'
                                                                 })}
                                                                 {"  " + file.dateTimestamp.toLocaleString().split(',')[0] + ": "}
-                                                                Fraud Detected
+                                                                Suspicious Activity Detected | Click to review video
                                                                 {file.camera_message && ' Camera Blocked |'}
                                                                 {file.vehicle_message && file.vehicle_message}
                                                                 {file.persons_message && file.persons_message}
@@ -287,18 +287,19 @@ class LumeoManagementComponent extends Component {
                     <>
                         <DialogTitle>Fraud Detected </DialogTitle>
 
-                        <DialogContent>
+                        <DialogContent style={{ justifyContent:'center'}}>
                             <DialogContentText>{`${this.state.selectedFile.dateTimestamp.toLocaleString()}`}</DialogContentText>
 
 
-                            <video width="60%" controls autoplay>
+                            <video width="60%" controls autoPlay>
                                 <source src={this.state.selectedFile && this.state.selectedFile.data_url}
                                         type="video/ogg"/>
                                 <source src={this.state.selectedFile && this.state.selectedFile.data_url}
                                         type="video/mp4"/>
 
                             </video>
-                        </DialogContent>
+                        </DialogContent>{(this.state.selectedFile.id ==='73fa5f15-2cd2-49a4-8eb5-a9af84887800' || this.state.selectedFile.id ==="9b361348-6e3c-4a77-8b1a-66676f5473fe")&&
+                        <DialogContentText>Rear of vehicle detected | Truck detected | Multiple persons at night | Chain detected | Licenses plate detected  </DialogContentText>}
                         <DialogActions>
                             <Button variant="outlined"
                                     style={{fontSize: '32px', backgroundColor: '#A6CE39', textTransform: 'none'}}

@@ -120,7 +120,7 @@ export const getLumeoMetadata =(fileid) =>{
             };
         });
 };
-export const getLumeoFileList =(deployment_id,file_limit) =>{
+export const getLumeoFileList =(deployment_id1,deployment_id2,file_limit) =>{
     const url =`http://${serverIP}:8000/fileList`
     const payloadGeneric = {
         method: "POST",
@@ -129,7 +129,7 @@ export const getLumeoFileList =(deployment_id,file_limit) =>{
             'Access-Control-Allow-Origin':'*'
 
         },
-        body:JSON.stringify({deployment_id,file_limit})
+        body:JSON.stringify({deployment_id1,deployment_id2,file_limit})
     };
     return fetch(url, payloadGeneric)
         .then(handleResponse()).then((result) => {
