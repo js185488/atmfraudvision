@@ -150,7 +150,7 @@ class LumeoManagementComponent extends Component {
 
 
         let fileList = result.filter((file) =>
-            (file.deployment_id === hook_chain_id|| file.deployment_id===atm_fraud_id))
+            (file.deployment_id === hook_chain_id || file.deployment_id === atm_fraud_id))
         const today = new Date()
         const startDate = new Date(today)
         startDate.setDate(startDate.getDate() - limit_recent_days)
@@ -169,8 +169,8 @@ class LumeoManagementComponent extends Component {
 
 
     }
-    checkStreamId=(stream_id)=>{
-        return stream_id ==="9ad13ad8-f66f-4e7b-94ef-3c0331e0acc7"//cash slot stream_id
+    checkStreamId = (stream_id) => {
+        return stream_id === "9ad13ad8-f66f-4e7b-94ef-3c0331e0acc7"//cash slot stream_id
     }
 
     render() {
@@ -223,7 +223,7 @@ class LumeoManagementComponent extends Component {
                                     <>
                                         {
 
-                                            (file.fraudBool||true ?
+                                            (file.fraudBool || true ?
                                                     <>
                                                         <Divider style={{color: 'grey'}}/>
 
@@ -247,11 +247,11 @@ class LumeoManagementComponent extends Component {
                                                                 })}
                                                                 {"  " + file.dateTimestamp.toLocaleString().split(',')[0] + ": "}
                                                                 Suspicious Activity Detected | Click to review video
-                                                                {file.camera_message && ' Camera Blocked |'}
+                                                                {/*file.camera_message && ' Camera Blocked |'}
                                                                 {file.vehicle_message && file.vehicle_message}
                                                                 {file.persons_message && file.persons_message}
                                                                 {file.weapons_message && ' Weapon Detected |'}
-                                                                {file.loitering_message && ' Loitering Detected'}
+                                                                {file.loitering_message && ' Loitering Detected'*/}
 
                                                             </ListItemText>
                                                         </ListItem>
@@ -275,7 +275,7 @@ class LumeoManagementComponent extends Component {
                 </div>
                 <Dialog
                     fullScreen={false}
-                    open={this.state.selectedFile !==null}
+                    open={this.state.selectedFile !== null}
                     aria-labelledby="alert-dialog-slide-title"
                     aria-describedby="alert-dialog-slide-description"
                     maxWidth={'lg'}
@@ -287,19 +287,20 @@ class LumeoManagementComponent extends Component {
                     <>
                         <DialogTitle>Fraud Detected </DialogTitle>
 
-                        <DialogContent style={{ justifyContent:'center'}}>
+                        <DialogContent style={{justifyContent: 'center'}}>
                             <DialogContentText>{`${this.state.selectedFile.dateTimestamp.toLocaleString()}`}</DialogContentText>
 
 
-                            <video width="60%" controls autoPlay>
+                            <video width="60%" controls>
                                 <source src={this.state.selectedFile && this.state.selectedFile.data_url}
                                         type="video/ogg"/>
                                 <source src={this.state.selectedFile && this.state.selectedFile.data_url}
                                         type="video/mp4"/>
 
                             </video>
-                        </DialogContent>{(this.state.selectedFile.id ==='73fa5f15-2cd2-49a4-8eb5-a9af84887800' || this.state.selectedFile.id ==="9b361348-6e3c-4a77-8b1a-66676f5473fe")&&
-                        <DialogContentText>Rear of vehicle detected | Truck detected | Multiple persons at night | Chain detected | Licenses plate detected  </DialogContentText>}
+                        </DialogContent>{(this.state.selectedFile.id === '73fa5f15-2cd2-49a4-8eb5-a9af84887800' || this.state.selectedFile.id === "9b361348-6e3c-4a77-8b1a-66676f5473fe") &&
+                    <DialogContentText style={{margin: 10}}>Rear of vehicle detected | Truck detected | Multiple persons
+                        at night | Chain detected | Licenses plate detected </DialogContentText>}
                         <DialogActions>
                             <Button variant="outlined"
                                     style={{fontSize: '32px', backgroundColor: '#A6CE39', textTransform: 'none'}}
