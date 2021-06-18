@@ -191,10 +191,10 @@ class LumeoRunComponent extends Component {
                                                 {object.attributes && object.attributes.length > 0 && object.attributes[0].label === 'finger_jam' &&
                                                 <p className='fraudDetectedText'>Finger jam Detected!</p>}
 
-                                                {
+                                                {/*
                                                     object.attributes && object.attributes.length > 0 &&
                                                     <p className='nonFraudText'>{object.attributes[0].label}</p>
-                                                }
+                                                */}
                                             </>
                                         )
                                     })}
