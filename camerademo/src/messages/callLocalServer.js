@@ -1,5 +1,5 @@
 //const serverIP = '153.73.253.204'
-const serverIP='localhost'
+const serverIP=window.location.hostname
 
 
 export function callPythonCoverDemo () {
